@@ -442,7 +442,7 @@ function openDett(id){
       +(r.isFree?'':r.pagato
         ?'<button class="btn btn-sm" onclick="togglePag(\''+c.id+'\','+anno+',false);openDett(\''+c.id+'\')">Annulla</button>'
         :'<button class="btn btn-sm btn-green" onclick="togglePag(\''+c.id+'\','+anno+',true);openDett(\''+c.id+'\')">Segna pagato</button>')
-      +(r.isFree?''：'<button class="btn btn-sm" onclick="openSconto(\''+c.id+'\','+anno+')">Sconto</button>')
+      +(r.isFree?'':'<button class="btn btn-sm" onclick="openSconto(\''+c.id+'\','+anno+')">Sconto</button>')
       +'</div></div>';
   });
   document.getElementById('modal-body').innerHTML=
