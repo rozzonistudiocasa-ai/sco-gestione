@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Casa Offanengo — Gestione Affitti</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1f44;--navy-mid:#1a3a6e;--navy-light:#e8edf5;--navy-lighter:#f2f5fa;
+  --white:#ffffff;--black:#111111;--gray:#6b7280;--gray-light:#e5e7eb;--gray-lighter:#f9fafb;
+  --danger:#b91c1c;--danger-bg:#fef2f2;--warn:#92400e;--warn-bg:#fffbeb;--ok:#166534;--ok-bg:#f0fdf4;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--black);background:var(--gray-lighter);min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;background:var(--navy);flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.logo-box{width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:13px;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:500;color:var(--white)}
+.topbar-right{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn-top{padding:5px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:6px;background:transparent;font-size:12px;cursor:pointer;color:var(--white)}
+.btn-top:hover{background:rgba(255,255,255,0.12)}
+.today-lbl{font-size:11px;color:rgba(255,255,255,0.6)}
+.nav{display:flex;border-bottom:2px solid var(--navy);background:var(--white);flex-wrap:wrap;position:sticky;top:56px;z-index:40}
+.nav button{padding:10px 16px;border:none;border-bottom:3px solid transparent;background:transparent;font-size:13px;cursor:pointer;color:var(--gray);margin-bottom:-2px}
+.nav button:hover{color:var(--navy);background:var(--navy-lighter)}
+.nav button.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy)}
+.layout{display:flex;flex:1}
+.content{padding:18px;flex:1;min-width:0}
+.ai-panel{width:310px;flex-shrink:0;background:var(--white);border-left:1px solid var(--gray-light);display:flex;flex-direction:column;height:calc(100vh - 88px);position:sticky;top:88px}
+.ai-head{padding:11px 14px;border-bottom:1px solid var(--gray-light);background:var(--navy-lighter);display:flex;align-items:center;gap:8px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:#22c55e}
+.ai-head span{font-size:13px;font-weight:600;color:var(--navy)}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:92%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap}
+.msg-user{background:var(--navy);color:white;align-self:flex-end;border-bottom-right-radius:3px}
+.msg-ai{background:var(--navy-lighter);color:var(--black);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--navy-light)}
+.msg-sys{background:#f0fdf4;color:#166534;align-self:center;font-size:12px;border:1px solid #bbf7d0;text-align:center;border-radius:6px;padding:6px 12px;max-width:95%}
+.ai-footer{padding:10px;border-top:1px solid var(--gray-light);display:flex;gap:6px}
+.ai-footer input{flex:1;padding:8px 10px;border:1px solid var(--gray-light);border-radius:7px;font-size:13px;font-family:inherit}
+.ai-footer input:focus{outline:none;border-color:var(--navy)}
+.ai-btn{padding:8px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:13px;cursor:pointer;font-weight:500}
+.ai-btn:disabled{opacity:0.45;cursor:not-allowed}
+.typing{display:flex;gap:4px;padding:2px 0}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--navy-mid);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0.15}40%{opacity:1}}
+.card{background:var(--white);border:1px solid var(--gray-light);border-radius:10px;padding:18px;margin-bottom:14px}
+.card h2{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--navy)}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.metric{background:var(--navy);border-radius:8px;padding:14px 16px}
+.metric .lbl{font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.metric .val{font-size:24px;font-weight:600;color:var(--white)}
+.metric .val.warn{color:#fbbf24}
+input,select,textarea{width:100%;padding:8px 11px;border:1px solid var(--gray-light);border-radius:7px;font-size:13px;background:var(--white);color:var(--black);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,31,68,0.08)}
+label{font-size:12px;color:var(--gray);display:block;margin-bottom:4px;margin-top:10px}
+.btn{padding:7px 16px;border:1px solid var(--gray-light);border-radius:7px;background:var(--white);font-size:13px;cursor:pointer;color:var(--black)}
+.btn:hover{background:var(--gray-lighter)}
+.btn-primary{background:var(--navy);color:var(--white);border-color:var(--navy);font-weight:500}
+.btn-primary:hover{background:var(--navy-mid)}
+.btn-green{background:#166534;color:#fff;border-color:#166534}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-danger{color:var(--danger);border-color:#fca5a5}
+.btn-danger:hover{background:var(--danger-bg)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--navy-lighter)}
+th{text-align:left;font-weight:600;font-size:12px;color:var(--navy);padding:10px 12px;border-bottom:2px solid var(--navy-light)}
+td{padding:9px 12px;border-bottom:1px solid var(--gray-light);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--navy-lighter)}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-ok{background:#dcfce7;color:#166534}
+.badge-warn{background:#fef9c3;color:#854d0e}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-info{background:var(--navy-light);color:var(--navy)}
+.badge-gray{background:var(--gray-light);color:var(--gray)}
+.alert{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:8px;border-left:4px solid}
+.alert-warn{background:var(--warn-bg);color:var(--warn);border-color:#f59e0b}
+.alert-danger{background:var(--danger-bg);color:var(--danger);border-color:#ef4444}
+.alert-ok{background:var(--ok-bg);color:var(--ok);border-color:#22c55e}
+.alert-info{background:var(--navy-light);color:var(--navy);border-color:var(--navy-mid)}
+.scroll-x{overflow-x:auto}
+.sec-title{font-size:12px;font-weight:600;margin:16px 0 8px;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px}
+.row-flex{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.row-flex>div{flex:1;min-width:130px}
+.empty{text-align:center;color:var(--gray);padding:36px;font-size:13px}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-light);font-size:13px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--gray);min-width:150px}
+.yr-row{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--gray-light);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;background:var(--gray-lighter)}
+.yr-row:hover{border-color:var(--navy-mid)}
+.yr-row .yr{font-weight:700;min-width:42px;padding-top:2px;color:var(--navy);font-size:15px}
+.yr-row .amt{font-size:13px;flex:1;min-width:180px;line-height:1.7}
+.yr-row .acts{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--white);border-radius:12px;padding:24px;width:min(640px,95vw);max-height:88vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--navy)}
+.close-x{float:right;cursor:pointer;font-size:20px;color:var(--gray);background:none;border:none;line-height:1}
+.test-row{padding:6px 8px;border-bottom:1px solid var(--gray-light);font-size:12px;font-family:monospace}
+.tp{color:#166534;font-weight:600}.tf{color:#b91c1c;font-weight:600}
+@media(max-width:900px){.ai-panel{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-box">SC</div>
+    <h1>Studio Casa Offanengo — Gestione Affitti</h1>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-top" onclick="esportaJSON()">&#8659; Esporta</button>
+    <label class="btn-top" style="cursor:pointer;margin:0">&#8657; Importa<input type="file" accept=".json" onchange="importaJSON(this)" style="display:none"></label>
+    <span class="today-lbl" id="today-lbl"></span>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showTab('dashboard')">Dashboard</button>
+  <button onclick="showTab('contratti')">Contratti</button>
+  <button onclick="showTab('clienti')">Clienti</button>
+  <button onclick="showTab('scadenze')">Scadenze</button>
+  <button onclick="showTab('pagamenti')">Pagamenti</button>
+  <button onclick="showTab('nuovo')">+ Nuovo contratto</button>
+  <button onclick="showTab('test')">Test</button>
+</div>
+
+<div class="layout">
+  <div class="content" id="content"></div>
+  <div class="ai-panel">
+    <div class="ai-head"><div class="ai-dot"></div><span>Assistente IA — Studio Casa</span></div>
+    <div class="ai-msgs" id="ai-msgs">
+      <div class="msg msg-sys">Ciao Roberto! Sono il tuo assistente IA integrato. Chiedimi qualsiasi cosa sui contratti, scadenze o importi da fatturare.</div>
+    </div>
+    <div class="ai-footer">
+      <input id="ai-in" placeholder="Es: chi non ha pagato nel 2025?" onkeydown="if(event.key==='Enter')sendAI()">
+      <button class="ai-btn" id="ai-btn" onclick="sendAI()">&#9658;</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><button class="close-x" onclick="closeModal()">&#x2715;</button><div id="modal-body"></div></div>
+</div>
+
+<script>
+const TODAY=new Date();
+const SK='sco_gestione_v3';
+function load(){try{const r=localStorage.getItem(SK);if(r)return JSON.parse(r);}catch(e){}return{clienti:[],contratti:[]};}
+function save(){try{localStorage.setItem(SK,JSON.stringify(DB));}catch(e){}}
+let DB=load(),TAB='dashboard',AIH=[];
+
+document.getElementById('today-lbl').textContent=TODAY.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
+
+function esportaJSON(){
+  const b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');
+  a.href=u;a.download='sco_'+TODAY.toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);
+}
+function importaJSON(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.clienti||!d.contratti)throw new Error('Formato non valido');
+      if(!confirm('Importare '+d.contratti.length+' contratti e '+d.clienti.length+' clienti? I dati attuali saranno sostituiti.'))return;
+      DB=d;save();render();alert('Importazione completata!');
+    }catch(ex){alert('Errore: '+ex.message);}
+  };
+  r.readAsText(f);inp.value='';
+}
+
+function diy(y){return((y%4===0&&y%100!==0)||(y%400===0))?366:365;}
+function dip(a,b){return Math.round((b-a)/86400000)+1;}
+function r2(n){return Math.round(n*100)/100;}
+
+function calcCanone(c,anno){
+  const s=new Date(c.dataInizio);const sY=s.getFullYear();
+  const eC=new Date(s);eC.setFullYear(eC.getFullYear()+8);const eY=eC.getFullYear();
+  if(anno<sY||anno>eY)return null;
+  const canone=parseFloat(c.canoneMensile);const annuo=canone*12;
+  const fascia=annuo<8760;const totG=diy(anno);
+  let isFree=false,lordo=0;
+  if(c.acquistoDaNoi&&anno===sY){isFree=true;}
+  else{
+    const ps=anno===sY?new Date(anno,s.getMonth(),s.getDate()):new Date(anno,0,1);
+    let pe;
+    if(anno===eY){const e=new Date(eC);e.setDate(e.getDate()-1);pe=new Date(anno,e.getMonth(),e.getDate());}
+    else pe=new Date(anno,11,31);
+    if(anno===sY&&anno===eY){const e2=new Date(eC);e2.setDate(e2.getDate()-1);pe=new Date(anno,e2.getMonth(),e2.getDate());}
+    const gg=dip(ps,pe);
+    lordo=fascia?gg:(annuo/totG)*gg*0.5;
+  }
+  const sObj=(c.sconti||[]).find(x=>x.anno===anno);
+  let sAmt=0;
+  if(sObj&&!isFree){sAmt=sObj.tipo==='perc'?lordo*sObj.val/100:parseFloat(sObj.val)||0;}
+  const netto=Math.max(0,lordo-sAmt);
+  const iva=c.iva!==false?netto*0.22:0;
+  const totale=netto+iva;
+  const pObj=(c.pagamenti||[]).find(p=>p.anno===anno);
+  return{anno,lordo:r2(lordo),sconto:r2(sAmt),netto:r2(netto),iva:r2(iva),totale:r2(totale),
+    isFree,fascia,pagato:pObj?pObj.pagato:false,dataPag:pObj?pObj.data:'',sObj};
+}
+function getAnni(c){const s=new Date(c.dataInizio);const e=new Date(s);e.setFullYear(e.getFullYear()+8);const a=[];for(let y=s.getFullYear();y<=e.getFullYear();y++)a.push(y);return a;}
+function getScad(c){const s=new Date(c.dataInizio);const e=new Date(s);e.setFullYear(e.getFullYear()+8);return e;}
+
+// AI
+function buildCtx(){
+  return JSON.stringify({
+    oggi:TODAY.toLocaleDateString('it-IT'),
+    contratti:DB.contratti.map(c=>({
+      cliente:c.cliente,immobile:c.immobile,canoneMensile:c.canoneMensile,
+      fascia:parseFloat(c.canoneMensile)*12<8760?'bassa-1€/giorno':'alta-50%canone',
+      dataInizio:c.dataInizio,scadenza:getScad(c).toLocaleDateString('it-IT'),
+      acquistoDaNoi:c.acquistoDaNoi,
+      canoni:getAnni(c).map(a=>calcCanone(c,a)).filter(Boolean).map(r=>({
+        anno:r.anno,totale:r.totale,pagato:r.pagato,isFree:r.isFree,dataPag:r.dataPag
+      }))
+    })),
+    clienti:DB.clienti.map(cl=>({nome:cl.nome,cf:cl.cf,tel:cl.tel,email:cl.email}))
+  },null,2);
+}
+async function sendAI(){
+  const inp=document.getElementById('ai-in');
+  const msg=inp.value.trim();if(!msg)return;
+  addMsg(msg,'user');inp.value='';
+  document.getElementById('ai-btn').disabled=true;
+  const typing=addTyping();
+  AIH.push({role:'user',content:'DATABASE:\n'+buildCtx()+'\n\nDOMANDA: '+msg});
+  try{
+    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:AIH})});
+    const data=await res.json();
+    typing.remove();
+    if(data.error){addMsg('Errore: '+data.error,'ai');AIH.pop();}
+    else{
+      const reply=data.content[0].text;
+      addMsg(reply,'ai');
+      AIH.push({role:'assistant',content:reply});
+      if(AIH.length>20)AIH=AIH.slice(-20);
+    }
+  }catch(e){
+    typing.remove();
+    addMsg('Errore di connessione. Verifica che Netlify Functions sia attivo.','ai');
+    AIH.pop();
+  }
+  document.getElementById('ai-btn').disabled=false;
+  inp.focus();
+}
+function addMsg(text,type){
+  const d=document.createElement('div');d.className='msg msg-'+type;d.textContent=text;
+  const c=document.getElementById('ai-msgs');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+function addTyping(){
+  const d=document.createElement('div');d.className='msg msg-ai';
+  d.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  const c=document.getElementById('ai-msgs');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+
+// NAV
+function showTab(t){
+  TAB=t;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  ['dashboard','contratti','clienti','scadenze','pagamenti','nuovo','test'].forEach((l,i)=>{
+    if(l===t)document.querySelectorAll('.nav button')[i].classList.add('active');
+  });
+  render();
+}
+function render(){
+  const el=document.getElementById('content');
+  const map={dashboard:rDashboard,contratti:rContratti,clienti:rClienti,scadenze:rScadenze,pagamenti:rPagamenti,nuovo:rNuovo,test:rTest};
+  el.innerHTML=(map[TAB]||rDashboard)();
+}
+
+function rDashboard(){
+  const nY=TODAY.getFullYear();let tD=0,tP=0,att=0;const alerts=[];
+  DB.contratti.forEach(c=>{
+    const scad=getScad(c);const dMs=scad-TODAY;const dY=dMs/(86400000*365);
+    if(dMs>0)att++;
+    if(dMs>0&&dY<=1)alerts.push({t:'danger',m:'<b>'+c.cliente+'</b> — '+(c.immobile||'')+' scade <b>'+scad.toLocaleDateString('it-IT')+'</b> — rinnovo urgente'});
+    else if(dMs>0&&dY<=2)alerts.push({t:'warn',m:'<b>'+c.cliente+'</b> — '+(c.immobile||'')+' scade <b>'+scad.toLocaleDateString('it-IT')+'</b> — avviare trattativa'});
+    const r=calcCanone(c,nY);if(r&&!r.isFree){tD+=r.totale;if(r.pagato)tP+=r.totale;}
+  });
+  const pend=tD-tP;
+  return '<div class="grid3"><div class="metric"><div class="lbl">Contratti attivi</div><div class="val">'+att+'</div></div>'
+    +'<div class="metric"><div class="lbl">Dovuto '+nY+'</div><div class="val">€'+tD.toFixed(2)+'</div></div>'
+    +'<div class="metric"><div class="lbl">Da incassare</div><div class="val'+(pend>0?' warn':'')+'">'+( pend>0?'€'+pend.toFixed(2):'Tutto ok ✓')+'</div></div></div>'
+    +(alerts.length?'<div style="margin-bottom:14px">'+alerts.map(a=>'<div class="alert alert-'+a.t+'">'+a.m+'</div>').join('')+'</div>':'')
+    +'<div class="card"><h2>Riepilogo '+nY+'</h2>'+rTabella(nY)+'</div>';
+}
+
+function rTabella(anno){
+  if(!DB.contratti.length)return'<div class="empty">Nessun contratto. Clicca "+ Nuovo contratto" per iniziare.</div>';
+  let rows='';
+  DB.contratti.forEach(c=>{
+    const r=calcCanone(c,anno);if(!r)return;
+    rows+='<tr><td><b>'+c.cliente+'</b><br><small style="color:var(--gray)">'+(c.immobile||'')+'</small></td>'
+      +'<td>'+(r.isFree?'<span class="badge badge-info">Gratuito</span>':'€'+r.totale.toFixed(2))+'</td>'
+      +'<td>'+(r.isFree?'—':r.pagato?'<span class="badge badge-ok">Pagato</span>':'<span class="badge badge-danger">Non pagato</span>')+'</td>'
+      +'<td><button class="btn btn-sm" onclick="openDett(\''+c.id+'\')">Dettaglio</button></td></tr>';
+  });
+  return'<div class="scroll-x"><table><thead><tr><th>Cliente / Immobile</th><th>Totale IVA incl.</th><th>Stato '+anno+'</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+function rContratti(){
+  if(!DB.contratti.length)return'<div class="card"><div class="empty">Nessun contratto. <button class="btn btn-primary" onclick="showTab(\'nuovo\')">Crea il primo</button></div></div>';
+  let rows='';
+  DB.contratti.forEach(c=>{
+    const scad=getScad(c);const dMs=scad-TODAY;const dY=dMs/(86400000*365);
+    const badge=dMs<=0?'<span class="badge badge-gray">Scaduto</span>':dY<=1?'<span class="badge badge-danger">Scade &lt;1a</span>':dY<=2?'<span class="badge badge-warn">Scade &lt;2a</span>':'<span class="badge badge-ok">Attivo</span>';
+    rows+='<tr><td><b>'+c.cliente+'</b></td><td>'+(c.immobile||'—')+'</td><td>€'+parseFloat(c.canoneMensile).toFixed(0)+'/mese</td>'
+      +'<td>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</td><td>'+scad.toLocaleDateString('it-IT')+'</td><td>'+badge+'</td>'
+      +'<td style="white-space:nowrap"><button class="btn btn-sm" onclick="openDett(\''+c.id+'\')">Dettaglio</button> '
+      +'<button class="btn btn-sm btn-danger" onclick="del(\''+c.id+'\',\'c\')">Elimina</button></td></tr>';
+  });
+  return'<div class="card"><h2>Contratti ('+DB.contratti.length+')</h2><div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Immobile</th><th>Canone</th><th>Inizio</th><th>Scadenza</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+
+function rClienti(){
+  return'<div class="card"><h2>Clienti ('+DB.clienti.length+')</h2>'
+    +'<button class="btn btn-primary" style="margin-bottom:14px" onclick="openNuovoCliente()">+ Aggiungi cliente</button>'
+    +(DB.clienti.length
+      ?'<div class="scroll-x"><table><thead><tr><th>Nome</th><th>Cod. Fiscale</th><th>P.IVA</th><th>Telefono</th><th>Email</th><th></th></tr></thead><tbody>'
+        +DB.clienti.map(cl=>'<tr><td><b>'+cl.nome+'</b></td><td>'+(cl.cf||'—')+'</td><td>'+(cl.piva||'—')+'</td><td>'+(cl.tel||'—')+'</td><td>'+(cl.email||'—')+'</td>'
+          +'<td><button class="btn btn-sm btn-danger" onclick="del(\''+cl.id+'\',\'k\')">Elimina</button></td></tr>').join('')
+        +'</tbody></table></div>'
+      :'<div class="empty">Nessun cliente registrato</div>')
+    +'</div>';
+}
+
+function rScadenze(){
+  const items=[];
+  DB.contratti.forEach(c=>{const scad=getScad(c);const dMs=scad-TODAY;if(dMs>0)items.push({c,scad,dY:dMs/(86400000*365)});});
+  items.sort((a,b)=>a.scad-b.scad);
+  return'<div class="card"><h2>Scadenze contratti (8 anni)</h2>'
+    +(items.length?items.map(i=>{
+      let cls='alert-ok',msg='';
+      if(i.dY<=1){cls='alert-danger';msg=' — URGENTE: rinnovo immediato';}
+      else if(i.dY<=2){cls='alert-warn';msg=' — Avviare trattativa di rinnovo';}
+      return'<div class="alert '+cls+'"><b>'+i.c.cliente+'</b> — '+(i.c.immobile||'immobile')+' — scadenza <b>'+i.scad.toLocaleDateString('it-IT')+'</b> (tra '+i.dY.toFixed(1)+' anni)'+msg+'</div>';
+    }).join('')
+    :'<div class="empty">Nessuna scadenza imminente</div>')
+    +'</div>';
+}
+
+function rPagamenti(){
+  const nY=TODAY.getFullYear();
+  let html='<div class="card"><h2>Stato pagamenti</h2>';
+  [nY-1,nY,nY+1].forEach(anno=>{
+    html+='<div class="sec-title">'+anno+'</div>';
+    let rows='';
+    DB.contratti.forEach(c=>{
+      const r=calcCanone(c,anno);if(!r)return;
+      rows+='<tr><td><b>'+c.cliente+'</b><br><small style="color:var(--gray)">'+(c.immobile||'')+'</small></td>'
+        +'<td>'+(r.isFree?'<span class="badge badge-info">Gratuito</span>':'€'+r.totale.toFixed(2))+'</td>'
+        +'<td>'+(r.isFree?'—':r.pagato?'<span class="badge badge-ok">Pagato'+(r.dataPag?' il '+r.dataPag:'')+'</span>':'<span class="badge badge-danger">Non pagato</span>')+'</td>'
+        +'<td>'+(r.isFree?'':'<button class="btn btn-sm '+(r.pagato?'':'btn-green')+'" onclick="togglePag(\''+c.id+'\','+anno+','+(r.pagato?'false':'true')+')">'+(r.pagato?'Annulla':'Segna pagato')+'</button>')+'</td></tr>';
+    });
+    html+=rows?'<div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Importo</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p style="font-size:13px;color:var(--gray);padding:4px 0">Nessun contratto per questo anno</p>';
+  });
+  return html+'</div>';
+}
+
+function rNuovo(){
+  const opts=DB.clienti.map(c=>'<option value="'+c.id+'">'+c.nome+'</option>').join('');
+  return'<div class="card"><h2>Nuovo contratto di gestione</h2>'
+    +'<div class="row-flex"><div><label>Cliente *</label><select id="nc-cl"><option value="">-- Seleziona --</option>'+opts+'</select>'
+    +'<div style="margin-top:8px"><button class="btn btn-sm" onclick="openNuovoCliente()">+ Crea nuovo cliente</button></div></div>'
+    +'<div><label>Immobile (indirizzo)</label><input id="nc-imm" placeholder="Via Roma 1, Offanengo"></div></div>'
+    +'<div class="row-flex"><div><label>Canone locazione mensile (€) *</label><input id="nc-can" type="number" min="0" placeholder="800"></div>'
+    +'<div><label>Data inizio contratto gestione *</label><input id="nc-dat" type="date"></div></div>'
+    +'<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'
+    +'<label style="display:flex;align-items:center;gap:8px;margin:0;color:var(--black)"><input type="checkbox" id="nc-acq" style="width:auto;accent-color:var(--navy)"> Immobile acquistato tramite Studio Casa Offanengo (1° anno gratuito)</label>'
+    +'<label style="display:flex;align-items:center;gap:8px;margin:0;color:var(--black)"><input type="checkbox" id="nc-iva" style="width:auto;accent-color:var(--navy)" checked> Soggetto a IVA 22%</label></div>'
+    +'<label>Note</label><textarea id="nc-not" rows="2" placeholder="Note libere..."></textarea>'
+    +'<div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-primary" onclick="salvaContratto()">Salva contratto</button><button class="btn" onclick="showTab(\'contratti\')">Annulla</button></div>'
+    +'<div id="nc-msg" style="margin-top:8px"></div></div>';
+}
+
+function rTest(){
+  const res=runTests();const pass=res.filter(r=>r.ok).length;const fail=res.filter(r=>!r.ok).length;
+  return'<div class="card"><h2>Test automatico motore di calcolo</h2>'
+    +'<div class="alert '+(fail===0?'alert-ok':'alert-danger')+'" style="margin-bottom:14px">'+(fail===0?'Tutti i test superati!':'Attenzione: test falliti.')+' <b>'+pass+'/'+res.length+' passati</b></div>'
+    +'<div style="background:var(--gray-lighter);border-radius:8px;padding:6px">'
+    +res.map(r=>'<div class="test-row"><span class="'+(r.ok?'tp':'tf')+'">'+(r.ok?'PASS':'FAIL')+'</span> &nbsp;'+r.name+' → atteso <b>'+r.expected+'</b>, ottenuto <b>'+(typeof r.got==='number'?Math.round(r.got*100)/100:r.got)+'</b></div>').join('')
+    +'</div><div style="margin-top:12px"><button class="btn btn-primary" onclick="render()">Riesegui</button></div></div>';
+}
+
+function salvaContratto(){
+  const cId=document.getElementById('nc-cl').value;
+  const can=document.getElementById('nc-can').value;
+  const dat=document.getElementById('nc-dat').value;
+  if(!cId||!can||!dat){document.getElementById('nc-msg').innerHTML='<div class="alert alert-danger">Compila tutti i campi obbligatori (*)</div>';return;}
+  const cl=DB.clienti.find(c=>c.id===cId);
+  DB.contratti.push({id:'c'+Date.now(),clienteId:cId,cliente:cl?cl.nome:cId,
+    immobile:document.getElementById('nc-imm').value.trim(),
+    canoneMensile:parseFloat(can),dataInizio:dat,
+    acquistoDaNoi:document.getElementById('nc-acq').checked,
+    iva:document.getElementById('nc-iva').checked,
+    note:document.getElementById('nc-not').value,sconti:[],pagamenti:[]});
+  save();showTab('contratti');
+}
+
+function del(id,tipo){
+  if(!confirm('Eliminare questo elemento?'))return;
+  if(tipo==='c')DB.contratti=DB.contratti.filter(x=>x.id!==id);
+  else DB.clienti=DB.clienti.filter(x=>x.id!==id);
+  save();render();
+}
+
+function togglePag(id,anno,stato){
+  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
+  if(!c.pagamenti)c.pagamenti=[];
+  const idx=c.pagamenti.findIndex(p=>p.anno===anno);
+  const oggi=TODAY.toLocaleDateString('it-IT');
+  if(idx>=0)c.pagamenti[idx]={anno,pagato:stato,data:stato?oggi:''};
+  else c.pagamenti.push({anno,pagato:stato,data:stato?oggi:''});
+  save();render();
+}
+
+function openDett(id){
+  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
+  const anni=getAnni(c);const scad=getScad(c);
+  let righe='';
+  anni.forEach(anno=>{
+    const r=calcCanone(c,anno);if(!r)return;
+    const bl=r.isFree?'<span class="badge badge-info">Gratuito — acquisto tramite agenzia</span>':r.fascia?'<span class="badge badge-gray">1€/giorno</span>':'<span class="badge badge-gray">50% canone annuo</span>';
+    righe+='<div class="yr-row"><span class="yr">'+anno+'</span>'
+      +'<span class="amt">'+bl+'<br>'
+      +(r.isFree?'<span style="color:var(--gray)">Nessun importo dovuto</span>'
+        :'Imponibile <b>€'+r.netto.toFixed(2)+'</b> + IVA €'+r.iva.toFixed(2)+' = <b style="color:var(--navy)">€'+r.totale.toFixed(2)+'</b>')
+      +(r.sconto>0?' <span class="badge badge-warn">Sconto −€'+r.sconto.toFixed(2)+'</span>':'')
+      +(!r.isFree?r.pagato?'<br><span class="badge badge-ok">Pagato'+(r.dataPag?' il '+r.dataPag:'')+'</span>':'<br><span class="badge badge-danger">Non pagato</span>':'')
+      +'</span>'
+      +'<div class="acts">'
+      +(r.isFree?'':r.pagato
+        ?'<button class="btn btn-sm" onclick="togglePag(\''+c.id+'\','+anno+',false);openDett(\''+c.id+'\')">Annulla</button>'
+        :'<button class="btn btn-sm btn-green" onclick="togglePag(\''+c.id+'\','+anno+',true);openDett(\''+c.id+'\')">Segna pagato</button>')
+      +(r.isFree?''：'<button class="btn btn-sm" onclick="openSconto(\''+c.id+'\','+anno+')">Sconto</button>')
+      +'</div></div>';
+  });
+  document.getElementById('modal-body').innerHTML=
+    '<h3>'+c.cliente+' — '+(c.immobile||'Contratto gestione')+'</h3>'
+    +'<div class="kv"><span class="k">Canone locazione</span><span>€'+parseFloat(c.canoneMensile).toFixed(2)+'/mese — €'+(parseFloat(c.canoneMensile)*12).toFixed(2)+'/anno</span></div>'
+    +'<div class="kv"><span class="k">Fascia gestione</span><span>'+(parseFloat(c.canoneMensile)*12<8760?'Bassa — 1€/giorno':'Alta — 50% canone annuo')+'</span></div>'
+    +'<div class="kv"><span class="k">Data inizio</span><span>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</span></div>'
+    +'<div class="kv"><span class="k">Scadenza (8 anni)</span><span>'+scad.toLocaleDateString('it-IT')+'</span></div>'
+    +'<div class="kv"><span class="k">Acquisto tramite agenzia</span><span>'+(c.acquistoDaNoi?'Sì — 1° anno gratuito':'No')+'</span></div>'
+    +(c.note?'<div class="kv"><span class="k">Note</span><span>'+c.note+'</span></div>':'')
+    +'<div class="sec-title">Piano canoni anno per anno</div>'+righe
+    +'<div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary" onclick="stampaPDF(\''+c.id+'\')">Stampa / Salva PDF</button>'
+    +'<button class="btn" onclick="closeModal()">Chiudi</button></div>';
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function openSconto(id,anno){
+  const c=DB.contratti.find(x=>x.id===id);
+  const s=(c.sconti||[]).find(x=>x.anno===anno);
+  const r=calcCanone(c,anno);
+  document.getElementById('modal-body').innerHTML=
+    '<h3>Sconto '+anno+' — '+c.cliente+'</h3>'
+    +'<div class="alert alert-info" style="margin-bottom:12px">Canone lordo base: <b>€'+(r?r.lordo.toFixed(2):'—')+'</b></div>'
+    +'<label>Tipo sconto</label><select id="sc-t"><option value="perc"'+(s&&s.tipo==='perc'?' selected':'')+'>Percentuale (%)</option><option value="fisso"'+(s&&s.tipo==='fisso'?' selected':'')+'>Cifra fissa (€)</option></select>'
+    +'<label>Valore</label><input id="sc-v" type="number" min="0" step="0.01" value="'+(s?s.val:0)+'">'
+    +'<label>Motivo (opzionale)</label><input id="sc-n" placeholder="Accordo commerciale..." value="'+(s?s.note||':'')+'">'
+    +'<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary" onclick="salvaSconto(\''+id+'\','+anno+')">Salva</button>'
+    +(s?'<button class="btn btn-danger" onclick="delSconto(\''+id+'\','+anno+')">Rimuovi sconto</button>':'')
+    +'<button class="btn" onclick="openDett(\''+id+'\')">Annulla</button></div>';
+}
+function salvaSconto(id,anno){
+  const c=DB.contratti.find(x=>x.id===id);if(!c.sconti)c.sconti=[];
+  const tipo=document.getElementById('sc-t').value;
+  const val=parseFloat(document.getElementById('sc-v').value)||0;
+  const note=document.getElementById('sc-n').value;
+  const idx=c.sconti.findIndex(s=>s.anno===anno);
+  if(idx>=0)c.sconti[idx]={anno,tipo,val,note};else c.sconti.push({anno,tipo,val,note});
+  save();openDett(id);
+}
+function delSconto(id,anno){
+  const c=DB.contratti.find(x=>x.id===id);c.sconti=(c.sconti||[]).filter(s=>s.anno!==anno);save();openDett(id);
+}
+
+function openNuovoCliente(){
+  document.getElementById('modal-body').innerHTML=
+    '<h3>Nuovo cliente</h3>'
+    +'<label>Nome / Ragione sociale *</label><input id="cl-n" placeholder="Mario Rossi">'
+    +'<div class="row-flex"><div><label>Codice Fiscale</label><input id="cl-cf"></div><div><label>P.IVA</label><input id="cl-pi"></div></div>'
+    +'<div class="row-flex"><div><label>Telefono</label><input id="cl-tel"></div><div><label>Email</label><input id="cl-em"></div></div>'
+    +'<label>Indirizzo</label><input id="cl-addr">'
+    +'<label>Note</label><textarea id="cl-note" rows="2"></textarea>'
+    +'<div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-primary" onclick="salvaCliente()">Salva</button><button class="btn" onclick="closeModal()">Annulla</button></div>'
+    +'<div id="cl-msg"></div>';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function salvaCliente(){
+  const nome=document.getElementById('cl-n').value.trim();
+  if(!nome){document.getElementById('cl-msg').innerHTML='<div class="alert alert-danger" style="margin-top:8px">Il nome è obbligatorio</div>';return;}
+  DB.clienti.push({id:'k'+Date.now(),nome,cf:document.getElementById('cl-cf').value,piva:document.getElementById('cl-pi').value,
+    tel:document.getElementById('cl-tel').value,email:document.getElementById('cl-em').value,
+    addr:document.getElementById('cl-addr').value,note:document.getElementById('cl-note').value});
+  save();closeModal();if(TAB==='clienti'||TAB==='nuovo')render();
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+
+function stampaPDF(id){
+  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
+  const anni=getAnni(c);const scad=getScad(c);const cl=DB.clienti.find(x=>x.id===c.clienteId);
+  let righe='';let tot=0;
+  anni.forEach(anno=>{
+    const r=calcCanone(c,anno);if(!r)return;
+    if(!r.isFree)tot+=r.totale;
+    const stato=r.isFree?'Gratuito':r.pagato?'PAGATO'+(r.dataPag?' '+r.dataPag:''):'IN ATTESA';
+    righe+='<tr><td>'+anno+'</td><td>'+(r.isFree?'Gratuito':r.fascia?'1€/giorno':'50% canone annuo')+'</td>'
+      +'<td>'+(r.isFree?'—':'€'+r.lordo.toFixed(2))+'</td>'
+      +'<td>'+(r.sconto>0?'€'+r.sconto.toFixed(2)+(r.sObj&&r.sObj.tipo==='perc'?' ('+r.sObj.val+'%)':''):'—')+'</td>'
+      +'<td>'+(r.isFree?'—':'€'+r.netto.toFixed(2))+'</td><td>'+(r.isFree?'—':'€'+r.iva.toFixed(2))+'</td>'
+      +'<td>'+(r.isFree?'—':'€'+r.totale.toFixed(2))+'</td>'
+      +'<td style="color:'+(stato==='IN ATTESA'?'#b91c1c':stato.startsWith('PAGATO')?'#166534':'#555')+';font-weight:600">'+stato+'</td></tr>';
+  });
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report — '+c.cliente+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:28px 36px;max-width:960px;margin:0 auto}'
+    +'.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:14px;border-bottom:3px solid #0a1f44}'
+    +'.logo{display:flex;align-items:center;gap:12px}.lb{width:38px;height:38px;background:#0a1f44;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}'
+    +'.an{font-size:18px;font-weight:700;color:#0a1f44}.as{font-size:11px;color:#6b7280;margin-top:2px}'
+    +'h2{font-size:11px;font-weight:700;margin:18px 0 8px;color:#0a1f44;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e5e7eb;padding-bottom:4px}'
+    +'.ig{display:grid;grid-template-columns:1fr 1fr;gap:4px 40px;margin-bottom:4px}'
+    +'.kv{display:flex;gap:8px;padding:3px 0;font-size:12px}.k{color:#6b7280;min-width:130px}'
+    +'table{width:100%;border-collapse:collapse;margin-top:6px;font-size:11px}'
+    +'thead tr{background:#0a1f44}th{color:#fff;padding:8px 10px;text-align:left;font-size:11px;font-weight:600}'
+    +'td{padding:7px 10px;border-bottom:1px solid #e5e7eb}tr:nth-child(even) td{background:#f2f5fa}'
+    +'.tb{background:#0a1f44;color:#fff;text-align:right;margin-top:12px;padding:10px 16px;border-radius:6px;font-size:14px;font-weight:700}'
+    +'.ft{margin-top:40px;font-size:10px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:8px;display:flex;justify-content:space-between}'
+    +'@media print{body{padding:0}}</style></head><body>'
+    +'<div class="hdr"><div class="logo"><div class="lb">SC</div><div><div class="an">Studio Casa Offanengo</div><div class="as">Gestione Immobiliare</div></div></div>'
+    +'<div style="text-align:right;font-size:11px;color:#6b7280">Report generato il<br><b>'+TODAY.toLocaleDateString('it-IT')+'</b></div></div>'
+    +'<h2>Dati cliente</h2><div class="ig">'
+    +'<div><div class="kv"><span class="k">Nome</span><b>'+(cl?cl.nome:c.cliente)+'</b></div>'
+    +'<div class="kv"><span class="k">Codice Fiscale</span>'+(cl&&cl.cf?cl.cf:'—')+'</div>'
+    +'<div class="kv"><span class="k">P.IVA</span>'+(cl&&cl.piva?cl.piva:'—')+'</div></div>'
+    +'<div><div class="kv"><span class="k">Telefono</span>'+(cl&&cl.tel?cl.tel:'—')+'</div>'
+    +'<div class="kv"><span class="k">Email</span>'+(cl&&cl.email?cl.email:'—')+'</div>'
+    +'<div class="kv"><span class="k">Indirizzo</span>'+(cl&&cl.addr?cl.addr:'—')+'</div></div></div>'
+    +'<h2>Contratto di gestione</h2><div class="ig">'
+    +'<div><div class="kv"><span class="k">Immobile</span>'+(c.immobile||'—')+'</div>'
+    +'<div class="kv"><span class="k">Canone locazione</span>€'+parseFloat(c.canoneMensile).toFixed(2)+'/mese</div>'
+    +'<div class="kv"><span class="k">Fascia gestione</span>'+(parseFloat(c.canoneMensile)*12<8760?'Bassa (1€/giorno)':'Alta (50% canone annuo)')+'</div></div>'
+    +'<div><div class="kv"><span class="k">Data inizio</span>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</div>'
+    +'<div class="kv"><span class="k">Scadenza</span>'+scad.toLocaleDateString('it-IT')+'</div>'
+    +'<div class="kv"><span class="k">Acquisto tramite agenzia</span>'+(c.acquistoDaNoi?'Sì — 1° anno gratuito':'No')+'</div></div></div>'
+    +(c.note?'<div class="kv"><span class="k">Note</span>'+c.note+'</div>':'')
+    +'<h2>Piano canoni di gestione (8 anni)</h2>'
+    +'<table><thead><tr><th>Anno</th><th>Tipo</th><th>Lordo</th><th>Sconto</th><th>Imponibile</th><th>IVA 22%</th><th>Totale</th><th>Stato</th></tr></thead><tbody>'+righe+'</tbody></table>'
+    +'<div class="tb">Totale complessivo contratto (IVA inclusa): €'+tot.toFixed(2)+'</div>'
+    +'<div class="ft"><span>Studio Casa Offanengo — Documento riservato</span><span>Generato il '+TODAY.toLocaleDateString('it-IT')+'</span></div>'
+    +'</body></html>';
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),500);}
+  else alert('Abilita i popup per la stampa PDF');
+}
+
+function runTests(){
+  const res=[];
+  function chk(name,got,exp,tol=0.01){res.push({name,ok:Math.abs(Number(got)-Number(exp))<=tol,got,expected:exp});}
+  const mk=(cm,di,acq,sc=[])=>({canoneMensile:cm,dataInizio:di,acquistoDaNoi:acq,iva:true,sconti:sc,pagamenti:[]});
+  let r;
+  r=calcCanone(mk(600,'2025-01-01',false),2025);chk('A — fascia bassa anno intero: lordo',r.lordo,365);chk('A — totale IVA',r.totale,445.30);
+  r=calcCanone(mk(1000,'2025-01-01',false),2025);chk('B — fascia alta anno intero: lordo',r.lordo,6000);chk('B — totale IVA',r.totale,7320);
+  r=calcCanone(mk(600,'2025-04-10',false),2025);chk('C — proporzionale 10/04/2025',r.lordo,dip(new Date(2025,3,10),new Date(2025,11,31)));
+  r=calcCanone(mk(600,'2025-01-01',true),2025);chk('D — 1° anno gratuito',r.totale,0);
+  r=calcCanone(mk(600,'2025-01-01',true),2026);chk('D — 2° anno non gratuito',r.lordo>0?1:0,1);
+  r=calcCanone(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'perc',val:20}]),2025);chk('E — sconto 20%: totale',r.totale,5856);
+  r=calcCanone(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'fisso',val:500}]),2025);chk('F — sconto fisso €500: totale',r.totale,6710);
+  chk('G — scadenza 8 anni',getScad(mk(600,'2020-01-01',false)).getFullYear(),2028);
+  chk('G — anno oltre scadenza',calcCanone(mk(600,'2020-01-01',false),2029)===null?1:0,1);
+  r=calcCanone(mk(730,'2025-01-01',false),2025);res.push({name:'H — 730€/mese: fascia alta',ok:r.fascia===false,got:r.fascia?'bassa':'alta',expected:'alta'});
+  return res;
+}
+
+render();
+</script>
+</body>
+</html>
