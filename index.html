@@ -6,585 +6,938 @@
 <title>Studio Casa Offanengo — Gestione Affitti</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#0a1f44;--navy-mid:#1a3a6e;--navy-light:#e8edf5;--navy-lighter:#f2f5fa;
-  --white:#ffffff;--black:#111111;--gray:#6b7280;--gray-light:#e5e7eb;--gray-lighter:#f9fafb;
-  --danger:#b91c1c;--danger-bg:#fef2f2;--warn:#92400e;--warn-bg:#fffbeb;--ok:#166534;--ok-bg:#f0fdf4;
-}
-body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--black);background:var(--gray-lighter);min-height:100vh}
-.app{display:flex;flex-direction:column;min-height:100vh}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:56px;background:var(--navy);flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:50}
-.topbar-left{display:flex;align-items:center;gap:10px}
-.logo-box{width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:13px;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:500;color:var(--white)}
-.topbar-right{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.btn-top{padding:5px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:6px;background:transparent;font-size:12px;cursor:pointer;color:var(--white)}
-.btn-top:hover{background:rgba(255,255,255,0.12)}
-.today-lbl{font-size:11px;color:rgba(255,255,255,0.6)}
-.nav{display:flex;border-bottom:2px solid var(--navy);background:var(--white);flex-wrap:wrap;position:sticky;top:56px;z-index:40}
-.nav button{padding:10px 16px;border:none;border-bottom:3px solid transparent;background:transparent;font-size:13px;cursor:pointer;color:var(--gray);margin-bottom:-2px}
-.nav button:hover{color:var(--navy);background:var(--navy-lighter)}
-.nav button.active{color:var(--navy);font-weight:600;border-bottom-color:var(--navy)}
-.layout{display:flex;flex:1}
-.content{padding:18px;flex:1;min-width:0}
-.ai-panel{width:310px;flex-shrink:0;background:var(--white);border-left:1px solid var(--gray-light);display:flex;flex-direction:column;height:calc(100vh - 88px);position:sticky;top:88px}
-.ai-head{padding:11px 14px;border-bottom:1px solid var(--gray-light);background:var(--navy-lighter);display:flex;align-items:center;gap:8px}
-.ai-dot{width:8px;height:8px;border-radius:50%;background:#22c55e}
-.ai-head span{font-size:13px;font-weight:600;color:var(--navy)}
-.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:92%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap}
-.msg-user{background:var(--navy);color:white;align-self:flex-end;border-bottom-right-radius:3px}
-.msg-ai{background:var(--navy-lighter);color:var(--black);align-self:flex-start;border-bottom-left-radius:3px;border:1px solid var(--navy-light)}
-.msg-sys{background:#f0fdf4;color:#166534;align-self:center;font-size:12px;border:1px solid #bbf7d0;text-align:center;border-radius:6px;padding:6px 12px;max-width:95%}
-.ai-footer{padding:10px;border-top:1px solid var(--gray-light);display:flex;gap:6px}
-.ai-footer input{flex:1;padding:8px 10px;border:1px solid var(--gray-light);border-radius:7px;font-size:13px;font-family:inherit}
-.ai-footer input:focus{outline:none;border-color:var(--navy)}
-.ai-btn{padding:8px 14px;background:var(--navy);color:white;border:none;border-radius:7px;font-size:13px;cursor:pointer;font-weight:500}
-.ai-btn:disabled{opacity:0.45;cursor:not-allowed}
-.typing{display:flex;gap:4px;padding:2px 0}
-.typing span{width:6px;height:6px;border-radius:50%;background:var(--navy-mid);animation:blink 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:0.15}40%{opacity:1}}
-.card{background:var(--white);border:1px solid var(--gray-light);border-radius:10px;padding:18px;margin-bottom:14px}
-.card h2{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--navy)}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.metric{background:var(--navy);border-radius:8px;padding:14px 16px}
-.metric .lbl{font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-.metric .val{font-size:24px;font-weight:600;color:var(--white)}
-.metric .val.warn{color:#fbbf24}
-input,select,textarea{width:100%;padding:8px 11px;border:1px solid var(--gray-light);border-radius:7px;font-size:13px;background:var(--white);color:var(--black);font-family:inherit}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,31,68,0.08)}
-label{font-size:12px;color:var(--gray);display:block;margin-bottom:4px;margin-top:10px}
-.btn{padding:7px 16px;border:1px solid var(--gray-light);border-radius:7px;background:var(--white);font-size:13px;cursor:pointer;color:var(--black)}
-.btn:hover{background:var(--gray-lighter)}
-.btn-primary{background:var(--navy);color:var(--white);border-color:var(--navy);font-weight:500}
-.btn-primary:hover{background:var(--navy-mid)}
-.btn-green{background:#166534;color:#fff;border-color:#166534}
-.btn-sm{padding:4px 10px;font-size:12px}
-.btn-danger{color:var(--danger);border-color:#fca5a5}
-.btn-danger:hover{background:var(--danger-bg)}
+:root{--nv:#0a1f44;--nm:#1a3a6e;--nl:#e8edf5;--nll:#f2f5fa;--wh:#fff;--bk:#111;--gr:#6b7280;--gl:#e5e7eb;--gll:#f9fafb;--dr:#b91c1c;--db:#fef2f2;--wn:#92400e;--wb:#fffbeb;--ok:#166534;--ob:#f0fdf4;}
+body{font-family:system-ui,Arial,sans-serif;font-size:14px;color:var(--bk);background:var(--gll)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:52px;background:var(--nv);flex-wrap:wrap;gap:6px}
+.tl{display:flex;align-items:center;gap:8px}
+.lb{width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px}
+.topbar h1{font-size:13px;font-weight:500;color:#fff}
+.tr{display:flex;gap:5px;align-items:center}
+.bt{padding:4px 10px;border:1px solid rgba(255,255,255,0.3);border-radius:5px;background:transparent;font-size:11px;cursor:pointer;color:#fff}
+.bt:hover{background:rgba(255,255,255,0.1)}
+.nav{display:flex;background:var(--wh);border-bottom:2px solid var(--nv);flex-wrap:wrap}
+.nav button{padding:9px 14px;border:none;border-bottom:3px solid transparent;background:transparent;font-size:12px;cursor:pointer;color:var(--gr);margin-bottom:-2px}
+.nav button:hover{color:var(--nv);background:var(--nll)}
+.nav button.on{color:var(--nv);font-weight:600;border-bottom-color:var(--nv)}
+.pg{padding:14px;min-height:300px}
+.card{background:var(--wh);border:1px solid var(--gl);border-radius:10px;padding:16px;margin-bottom:12px}
+.card h2{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--nv)}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.met{background:var(--nv);border-radius:8px;padding:12px 14px}
+.met .ml{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+.met .mv{font-size:22px;font-weight:600;color:#fff}
+.met .mv.w{color:#fbbf24}
+input,select,textarea{width:100%;padding:7px 10px;border:1px solid var(--gl);border-radius:6px;font-size:13px;background:var(--wh);color:var(--bk);font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--nv)}
+label{font-size:12px;color:var(--gr);display:block;margin-bottom:3px;margin-top:8px}
+.btn{padding:6px 14px;border:1px solid var(--gl);border-radius:6px;background:var(--wh);font-size:13px;cursor:pointer;color:var(--bk)}
+.btn:hover{background:var(--gll)}
+.bp{background:var(--nv);color:#fff;border-color:var(--nv);font-weight:500}.bp:hover{background:var(--nm)}
+.bg{background:#166534;color:#fff;border-color:#166534}
+.bs{padding:3px 9px;font-size:12px}
+.bd{color:var(--dr);border-color:#fca5a5}.bd:hover{background:var(--db)}
+.bpf{background:#854d0e;color:#fff;border-color:#854d0e;font-size:12px;padding:4px 10px}
+.bpf:hover{background:#713f0c}
+.bmod{background:#0369a1;color:#fff;border-color:#0369a1;font-size:12px}
+.bmod:hover{background:#075985}
 table{width:100%;border-collapse:collapse;font-size:13px}
-thead{background:var(--navy-lighter)}
-th{text-align:left;font-weight:600;font-size:12px;color:var(--navy);padding:10px 12px;border-bottom:2px solid var(--navy-light)}
-td{padding:9px 12px;border-bottom:1px solid var(--gray-light);vertical-align:middle}
+thead{background:var(--nll)}
+th{text-align:left;font-weight:600;font-size:11px;color:var(--nv);padding:9px 10px;border-bottom:2px solid var(--nl)}
+td{padding:8px 10px;border-bottom:1px solid var(--gl);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--navy-lighter)}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-ok{background:#dcfce7;color:#166534}
-.badge-warn{background:#fef9c3;color:#854d0e}
-.badge-danger{background:#fee2e2;color:#991b1b}
-.badge-info{background:var(--navy-light);color:var(--navy)}
-.badge-gray{background:var(--gray-light);color:var(--gray)}
-.alert{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:8px;border-left:4px solid}
-.alert-warn{background:var(--warn-bg);color:var(--warn);border-color:#f59e0b}
-.alert-danger{background:var(--danger-bg);color:var(--danger);border-color:#ef4444}
-.alert-ok{background:var(--ok-bg);color:var(--ok);border-color:#22c55e}
-.alert-info{background:var(--navy-light);color:var(--navy);border-color:var(--navy-mid)}
-.scroll-x{overflow-x:auto}
-.sec-title{font-size:12px;font-weight:600;margin:16px 0 8px;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px}
-.row-flex{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.row-flex>div{flex:1;min-width:130px}
-.empty{text-align:center;color:var(--gray);padding:36px;font-size:13px}
-.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-light);font-size:13px}
+tr:hover td{background:var(--nll)}
+.bx{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.bok{background:#dcfce7;color:#166534}.bwn{background:#fef9c3;color:#854d0e}.bdn{background:#fee2e2;color:#991b1b}.bin{background:var(--nl);color:var(--nv)}.bgr{background:var(--gl);color:var(--gr)}
+.al{padding:10px 13px;border-radius:7px;font-size:13px;margin-bottom:7px;border-left:4px solid}
+.aw{background:var(--wb);color:var(--wn);border-color:#f59e0b}.ad{background:var(--db);color:var(--dr);border-color:#ef4444}.ao{background:var(--ob);color:var(--ok);border-color:#22c55e}.ai{background:var(--nl);color:var(--nv);border-color:var(--nm)}
+.sx{overflow-x:auto}
+.st{font-size:11px;font-weight:600;margin:14px 0 6px;color:var(--nv);text-transform:uppercase;letter-spacing:0.5px}
+.rf{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.rf>div{flex:1;min-width:120px}
+.em{text-align:center;color:var(--gr);padding:32px;font-size:13px}
+.kv{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--gl);font-size:13px;gap:10px}
 .kv:last-child{border-bottom:none}
-.kv .k{color:var(--gray);min-width:150px}
-.yr-row{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--gray-light);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;background:var(--gray-lighter)}
-.yr-row:hover{border-color:var(--navy-mid)}
-.yr-row .yr{font-weight:700;min-width:42px;padding-top:2px;color:var(--navy);font-size:15px}
-.yr-row .amt{font-size:13px;flex:1;min-width:180px;line-height:1.7}
-.yr-row .acts{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center}
-.modal-bg.open{display:flex}
-.modal{background:var(--white);border-radius:12px;padding:24px;width:min(640px,95vw);max-height:88vh;overflow-y:auto}
-.modal h3{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--navy)}
-.close-x{float:right;cursor:pointer;font-size:20px;color:var(--gray);background:none;border:none;line-height:1}
-.test-row{padding:6px 8px;border-bottom:1px solid var(--gray-light);font-size:12px;font-family:monospace}
+.kv .k{color:var(--gr);min-width:140px}
+.yr{display:flex;align-items:flex-start;gap:8px;padding:10px;border:1px solid var(--gl);border-radius:7px;margin-bottom:7px;flex-wrap:wrap;background:var(--gll)}
+.yr:hover{border-color:var(--nm)}
+.yn{font-weight:700;min-width:40px;padding-top:2px;color:var(--nv);font-size:14px}
+.ya{font-size:13px;flex:1;min-width:160px;line-height:1.7}
+.yb{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-start;justify-content:center;padding-top:30px}
+.ovl.on{display:flex}
+.mdl{background:var(--wh);border-radius:10px;padding:20px;width:min(640px,95vw);max-height:85vh;overflow-y:auto}
+.mdl h3{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--nv)}
+.cx{float:right;cursor:pointer;font-size:18px;color:var(--gr);background:none;border:none;line-height:1}
 .tp{color:#166534;font-weight:600}.tf{color:#b91c1c;font-weight:600}
-@media(max-width:900px){.ai-panel{display:none}}
+.tr2{padding:5px 7px;border-bottom:1px solid var(--gl);font-size:12px;font-family:monospace}
+.codice{font-family:monospace;font-size:11px;background:var(--nll);color:var(--nv);padding:2px 7px;border-radius:4px;letter-spacing:0.5px}
+.acard{background:var(--wh);border:1px solid var(--gl);border-radius:10px;padding:14px;margin-bottom:10px}
+.sbadge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+.surg{background:#fee2e2;color:#991b1b}.sprt{background:#fef9c3;color:#854d0e}.snrm{background:#dcfce7;color:#166534}
+.arow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.bml{background:#0a1f44;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+.bml:hover{background:#1a3a6e}
+.bcl{background:#166534;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+.bcl:hover{background:#14532d}
+.bwa{background:#075e54;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;opacity:0.55}
+.btg{background:#0088cc;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;opacity:0.55}
+.chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;background:#e8edf5;color:#0a1f44;margin:2px}
+.slog{font-size:11px;color:var(--gr);font-style:italic;margin-top:4px}
+.ac-wrap{position:relative}
+.ac-list{position:absolute;top:100%;left:0;right:0;background:var(--wh);border:1px solid var(--gl);border-radius:6px;z-index:200;max-height:180px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.ac-item{padding:8px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--gl)}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover{background:var(--nll)}
+/* Multi-select proprietari */
+.ms-list{border:1px solid var(--gl);border-radius:6px;max-height:200px;overflow-y:auto;background:var(--wh)}
+.ms-item{padding:8px 12px;border-bottom:1px solid var(--gl);display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+.ms-item:last-child{border-bottom:none}
+.ms-item:hover{background:var(--nll)}
+.ms-item input{width:auto;margin:0}
+.ms-selected{margin-top:8px;padding:8px;background:var(--nll);border-radius:6px;font-size:13px;min-height:36px;display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.ms-chip{background:var(--nv);color:#fff;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.ms-empty{color:var(--gr);font-style:italic;font-size:12px}
+@media(max-width:600px){.g3{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<div class="app">
-
 <div class="topbar">
-  <div class="topbar-left">
-    <div class="logo-box">SC</div>
-    <h1>Studio Casa Offanengo — Gestione Affitti</h1>
-  </div>
-  <div class="topbar-right">
-    <button class="btn-top" onclick="esportaJSON()">&#8659; Esporta</button>
-    <label class="btn-top" style="cursor:pointer;margin:0">&#8657; Importa<input type="file" accept=".json" onchange="importaJSON(this)" style="display:none"></label>
-    <span class="today-lbl" id="today-lbl"></span>
+  <div class="tl"><div class="lb">SC</div><h1>Studio Casa Offanengo &mdash; Gestione Affitti</h1></div>
+  <div class="tr">
+    <button class="bt" onclick="expJ()">Esporta</button>
+    <label class="bt" style="cursor:pointer;margin:0">Importa<input type="file" accept=".json" onchange="impJ(this)" style="display:none"></label>
+    <span id="dlbl" style="font-size:11px;color:rgba(255,255,255,0.55)"></span>
   </div>
 </div>
-
 <div class="nav">
-  <button class="active" onclick="showTab('dashboard')">Dashboard</button>
-  <button onclick="showTab('contratti')">Contratti</button>
-  <button onclick="showTab('clienti')">Clienti</button>
-  <button onclick="showTab('scadenze')">Scadenze</button>
-  <button onclick="showTab('pagamenti')">Pagamenti</button>
-  <button onclick="showTab('nuovo')">+ Nuovo contratto</button>
-  <button onclick="showTab('test')">Test</button>
+  <button class="on" onclick="go('db')">Dashboard</button>
+  <button onclick="go('ct')">Contratti</button>
+  <button onclick="go('cl')">Clienti</button>
+  <button onclick="go('sc')">Promemoria &amp; Alert</button>
+  <button onclick="go('pg')">Pagamenti</button>
+  <button onclick="go('nw')">+ Nuovo contratto</button>
+  <button onclick="go('ts')">Test</button>
 </div>
-
-<div class="layout">
-  <div class="content" id="content"></div>
-  <div class="ai-panel">
-    <div class="ai-head"><div class="ai-dot"></div><span>Assistente IA — Studio Casa</span></div>
-    <div class="ai-msgs" id="ai-msgs">
-      <div class="msg msg-sys">Ciao Roberto! Sono il tuo assistente IA integrato. Chiedimi qualsiasi cosa sui contratti, scadenze o importi da fatturare.</div>
-    </div>
-    <div class="ai-footer">
-      <input id="ai-in" placeholder="Es: chi non ha pagato nel 2025?" onkeydown="if(event.key==='Enter')sendAI()">
-      <button class="ai-btn" id="ai-btn" onclick="sendAI()">&#9658;</button>
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
-  <div class="modal"><button class="close-x" onclick="closeModal()">&#x2715;</button><div id="modal-body"></div></div>
+<div class="pg" id="pg"></div>
+<div class="ovl" id="ovl" onclick="if(event.target===this)chiudi()">
+  <div class="mdl"><button class="cx" onclick="chiudi()">&#x2715;</button><div id="mb"></div></div>
 </div>
 
 <script>
-const TODAY=new Date();
-const SK='sco_gestione_v3';
-function load(){try{const r=localStorage.getItem(SK);if(r)return JSON.parse(r);}catch(e){}return{clienti:[],contratti:[]};}
-function save(){try{localStorage.setItem(SK,JSON.stringify(DB));}catch(e){}}
-let DB=load(),TAB='dashboard',AIH=[];
-
-document.getElementById('today-lbl').textContent=TODAY.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
-
-function esportaJSON(){
-  const b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
-  const u=URL.createObjectURL(b);const a=document.createElement('a');
-  a.href=u;a.download='sco_'+TODAY.toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);
+var T=new Date(), SK='sco_v6';
+function ld(){try{var r=localStorage.getItem(SK);if(r)return JSON.parse(r);}catch(e){}return{cl:[],ct:[]};}
+function sv(){try{localStorage.setItem(SK,JSON.stringify(DB));}catch(e){}}
+var DB=ld(), TAB='db';
+// Migrazione dati v5 → v6: clId singolo → clIds array
+for(var i=0;i<DB.ct.length;i++){
+  var c=DB.ct[i];
+  if(c.clId && !c.clIds){c.clIds=[c.clId];}
+  if(!c.clIds)c.clIds=[];
 }
-function importaJSON(inp){
-  const f=inp.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const d=JSON.parse(e.target.result);
-      if(!d.clienti||!d.contratti)throw new Error('Formato non valido');
-      if(!confirm('Importare '+d.contratti.length+' contratti e '+d.clienti.length+' clienti? I dati attuali saranno sostituiti.'))return;
-      DB=d;save();render();alert('Importazione completata!');
-    }catch(ex){alert('Errore: '+ex.message);}
-  };
-  r.readAsText(f);inp.value='';
+sv();
+document.getElementById('dlbl').textContent=T.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+
+// CODICI UNIVOCI (progressivi basati sul massimo esistente, non sul count)
+function genCodCliente(){
+  var y=T.getFullYear().toString().slice(2);
+  var maxN=0;
+  for(var i=0;i<DB.cl.length;i++){
+    var m=(DB.cl[i].cod||'').match(/^CL\d{2}(\d+)$/);
+    if(m){var n=parseInt(m[1],10);if(n>maxN)maxN=n;}
+  }
+  return 'CL'+y+String(maxN+1).padStart(4,'0');
+}
+function genCodContratto(){
+  var y=T.getFullYear().toString().slice(2);
+  var maxN=0;
+  for(var i=0;i<DB.ct.length;i++){
+    var m=(DB.ct[i].cod||'').match(/^CT\d{2}(\d+)$/);
+    if(m){var n=parseInt(m[1],10);if(n>maxN)maxN=n;}
+  }
+  return 'CT'+y+String(maxN+1).padStart(4,'0');
 }
 
+// Stato per selezione proprietari correnti
+var CURRENT_OWNERS=[];
+
+// COMPONI NOME DA PROPRIETARI MULTIPLI
+function nomeComposto(clIds){
+  if(!clIds||!clIds.length)return '—';
+  var parts=[];
+  for(var i=0;i<clIds.length;i++){
+    var cl=getCl(clIds[i]);
+    if(cl){
+      // Usa il cognome se disponibile, altrimenti il nome completo
+      var cognome=cl.cognome||cl.nome.split(' ').pop();
+      parts.push(cognome.toUpperCase());
+    }
+  }
+  return parts.join(' - ');
+}
+
+function nomeCompletoContratto(c){
+  if(c.clIds&&c.clIds.length)return nomeComposto(c.clIds);
+  return c.nome||'—';
+}
+
+// EXPORT/IMPORT
+function expJ(){var b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='sco_'+T.toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);}
+function impJ(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);if(!d.cl||!d.ct)throw new Error('Formato non valido');if(!confirm('Importare '+d.ct.length+' contratti?'))return;DB=d;sv();rend();alert('OK!');}catch(ex){alert('Errore: '+ex.message);}};r.readAsText(f);inp.value='';}
+
+// AUTOCOMPLETE INDIRIZZI
+function initAC(inputId, listId){
+  var inp=document.getElementById(inputId);
+  var lst=document.getElementById(listId);
+  if(!inp||!lst)return;
+  inp.addEventListener('input',function(){
+    var q=inp.value.trim();
+    if(q.length<3){lst.innerHTML='';lst.style.display='none';return;}
+    var url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=5&countrycodes=it&addressdetails=1';
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+      if(!data.length){lst.style.display='none';return;}
+      lst.innerHTML='';
+      data.forEach(function(item){
+        var d=document.createElement('div');d.className='ac-item';
+        d.textContent=item.display_name;
+        d.onclick=function(){
+          inp.value=item.display_name;
+          inp.dataset.lat=item.lat;
+          inp.dataset.lon=item.lon;
+          lst.innerHTML='';lst.style.display='none';
+        };
+        lst.appendChild(d);
+      });
+      lst.style.display='block';
+    }).catch(function(){lst.style.display='none';});
+  });
+  document.addEventListener('click',function(e){if(!inp.contains(e.target)&&!lst.contains(e.target)){lst.style.display='none';}});
+}
+
+// CALCOLO
 function diy(y){return((y%4===0&&y%100!==0)||(y%400===0))?366:365;}
 function dip(a,b){return Math.round((b-a)/86400000)+1;}
 function r2(n){return Math.round(n*100)/100;}
+function pad(n){return n<10?'0'+n:''+n;}
 
-function calcCanone(c,anno){
-  const s=new Date(c.dataInizio);const sY=s.getFullYear();
-  const eC=new Date(s);eC.setFullYear(eC.getFullYear()+8);const eY=eC.getFullYear();
+function calc(c,anno){
+  var s=new Date(c.di),sY=s.getFullYear();
+  var eC=new Date(s);eC.setFullYear(eC.getFullYear()+8);
+  var eY=eC.getFullYear();
   if(anno<sY||anno>eY)return null;
-  const canone=parseFloat(c.canoneMensile);const annuo=canone*12;
-  const fascia=annuo<8760;const totG=diy(anno);
-  let isFree=false,lordo=0;
-  if(c.acquistoDaNoi&&anno===sY){isFree=true;}
-  else{
-    const ps=anno===sY?new Date(anno,s.getMonth(),s.getDate()):new Date(anno,0,1);
-    let pe;
-    if(anno===eY){const e=new Date(eC);e.setDate(e.getDate()-1);pe=new Date(anno,e.getMonth(),e.getDate());}
-    else pe=new Date(anno,11,31);
-    if(anno===sY&&anno===eY){const e2=new Date(eC);e2.setDate(e2.getDate()-1);pe=new Date(anno,e2.getMonth(),e2.getDate());}
-    const gg=dip(ps,pe);
-    lordo=fascia?gg:(annuo/totG)*gg*0.5;
-  }
-  const sObj=(c.sconti||[]).find(x=>x.anno===anno);
-  let sAmt=0;
-  if(sObj&&!isFree){sAmt=sObj.tipo==='perc'?lordo*sObj.val/100:parseFloat(sObj.val)||0;}
-  const netto=Math.max(0,lordo-sAmt);
-  const iva=c.iva!==false?netto*0.22:0;
-  const totale=netto+iva;
-  const pObj=(c.pagamenti||[]).find(p=>p.anno===anno);
-  return{anno,lordo:r2(lordo),sconto:r2(sAmt),netto:r2(netto),iva:r2(iva),totale:r2(totale),
-    isFree,fascia,pagato:pObj?pObj.pagato:false,dataPag:pObj?pObj.data:'',sObj};
-}
-function getAnni(c){const s=new Date(c.dataInizio);const e=new Date(s);e.setFullYear(e.getFullYear()+8);const a=[];for(let y=s.getFullYear();y<=e.getFullYear();y++)a.push(y);return a;}
-function getScad(c){const s=new Date(c.dataInizio);const e=new Date(s);e.setFullYear(e.getFullYear()+8);return e;}
+  var can=parseFloat(c.cm),ann=can*12,fas=ann<8760,tg=diy(anno);
+  var free=false,lordo=0,ps,pe;
 
-// AI
-function buildCtx(){
-  return JSON.stringify({
-    oggi:TODAY.toLocaleDateString('it-IT'),
-    contratti:DB.contratti.map(c=>({
-      cliente:c.cliente,immobile:c.immobile,canoneMensile:c.canoneMensile,
-      fascia:parseFloat(c.canoneMensile)*12<8760?'bassa-1€/giorno':'alta-50%canone',
-      dataInizio:c.dataInizio,scadenza:getScad(c).toLocaleDateString('it-IT'),
-      acquistoDaNoi:c.acquistoDaNoi,
-      canoni:getAnni(c).map(a=>calcCanone(c,a)).filter(Boolean).map(r=>({
-        anno:r.anno,totale:r.totale,pagato:r.pagato,isFree:r.isFree,dataPag:r.dataPag
-      }))
-    })),
-    clienti:DB.clienti.map(cl=>({nome:cl.nome,cf:cl.cf,tel:cl.tel,email:cl.email}))
-  },null,2);
-}
-async function sendAI(){
-  const inp=document.getElementById('ai-in');
-  const msg=inp.value.trim();if(!msg)return;
-  addMsg(msg,'user');inp.value='';
-  document.getElementById('ai-btn').disabled=true;
-  const typing=addTyping();
-  AIH.push({role:'user',content:'DATABASE:\n'+buildCtx()+'\n\nDOMANDA: '+msg});
-  try{
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:AIH})});
-    const data=await res.json();
-    typing.remove();
-    if(data.error){addMsg('Errore: '+data.error,'ai');AIH.pop();}
-    else{
-      const reply=data.content[0].text;
-      addMsg(reply,'ai');
-      AIH.push({role:'assistant',content:reply});
-      if(AIH.length>20)AIH=AIH.slice(-20);
+  if(c.acq&&anno===sY){free=true;}
+  else if(c.acq&&anno===sY+1){
+    ps=new Date(anno,s.getMonth(),s.getDate());
+    pe=new Date(anno,11,31);
+  } else if(!c.acq&&anno===sY){
+    ps=new Date(anno,s.getMonth(),s.getDate());
+    pe=new Date(anno,11,31);
+  } else if(anno===eY){
+    ps=new Date(anno,0,1);
+    var ef=new Date(eC);ef.setDate(ef.getDate()-1);
+    pe=new Date(anno,ef.getMonth(),ef.getDate());
+  } else {
+    ps=new Date(anno,0,1);
+    pe=new Date(anno,11,31);
+  }
+
+  if(!free){
+    var gg=dip(ps,pe);
+    if(fas){
+      // Fascia bassa: 1€ al giorno
+      lordo=gg;
+    } else {
+      // Fascia alta: 50% del canone MENSILE
+      // Anno intero = 12 mesi × (canone × 0.5)
+      // Parziale = (canone × 0.5 / 30) × giorni effettivi
+      var isAnnoIntero=(ps.getMonth()===0&&ps.getDate()===1&&pe.getMonth()===11&&pe.getDate()===31);
+      if(isAnnoIntero){
+        lordo=can*0.5*12;
+      } else {
+        lordo=(can*0.5/30)*gg;
+      }
     }
-  }catch(e){
-    typing.remove();
-    addMsg('Errore di connessione. Verifica che Netlify Functions sia attivo.','ai');
-    AIH.pop();
   }
-  document.getElementById('ai-btn').disabled=false;
-  inp.focus();
-}
-function addMsg(text,type){
-  const d=document.createElement('div');d.className='msg msg-'+type;d.textContent=text;
-  const c=document.getElementById('ai-msgs');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
-}
-function addTyping(){
-  const d=document.createElement('div');d.className='msg msg-ai';
-  d.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
-  const c=document.getElementById('ai-msgs');c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+
+  var sObj=null;
+  if(c.sco)for(var i=0;i<c.sco.length;i++){if(c.sco[i].anno===anno){sObj=c.sco[i];break;}}
+  var sa=0;
+  if(sObj&&!free)sa=sObj.tipo==='perc'?lordo*sObj.val/100:parseFloat(sObj.val)||0;
+  var net=Math.max(0,lordo-sa),iva=c.iva!==false?net*0.22:0,tot=net+iva;
+  var pObj=null;
+  if(c.pag)for(var j=0;j<c.pag.length;j++){if(c.pag[j].anno===anno){pObj=c.pag[j];break;}}
+
+  var periodo='';
+  if(!free&&ps&&pe){
+    var isIntero=(ps.getMonth()===0&&ps.getDate()===1&&pe.getMonth()===11&&pe.getDate()===31);
+    if(!isIntero)periodo=ps.toLocaleDateString('it-IT')+' → '+pe.toLocaleDateString('it-IT');
+  }
+  return{anno:anno,lordo:r2(lordo),sc:r2(sa),net:r2(net),iva:r2(iva),tot:r2(tot),free:free,fas:fas,pag:pObj?pObj.pag:false,dp:pObj?pObj.d:'',sObj:sObj,periodo:periodo,ps:ps,pe:pe};
 }
 
-// NAV
-function showTab(t){
+function anni(c){var s=new Date(c.di);var e=new Date(s);e.setFullYear(e.getFullYear()+8);var a=[];for(var y=s.getFullYear();y<=e.getFullYear();y++)a.push(y);return a;}
+function scad(c){var s=new Date(c.di);var e=new Date(s);e.setFullYear(e.getFullYear()+8);return e;}
+function getCl(id){for(var i=0;i<DB.cl.length;i++)if(DB.cl[i].id===id)return DB.cl[i];return null;}
+function getCt(id){for(var i=0;i<DB.ct.length;i++)if(DB.ct[i].id===id)return DB.ct[i];return null;}
+
+// PROMEMORIA
+var PRV=[{m:24,l:'24 mesi prima'},{m:18,l:'18 mesi prima'},{m:12,l:'12 mesi prima'},{m:6,l:'6 mesi prima'},{m:3,l:'3 mesi prima'},{m:2,l:'2 mesi prima'},{m:1,l:'1 mese prima'}];
+
+function buildMail(c,prev,dataCustom){
+  var sd=scad(c);var nome=nomeCompletoContratto(c);
+  var subj=encodeURIComponent('[SCO] Promemoria scadenza: '+nome+' - '+(c.imm||'')+(prev?' ('+prev.l+')':dataCustom?' ('+dataCustom+')':' (immediato)'));
+  var body=encodeURIComponent('Gentile Funzionario,\n\nPromemoria scadenza contratto di gestione:\n\nCliente: '+nome+'\nImmobile: '+(c.imm||'—')+'\nScadenza: '+sd.toLocaleDateString('it-IT')+'\n'+(prev?'Preavviso: '+prev.l+'\n':'')+(dataCustom?'Data promemoria: '+dataCustom+'\n':'')+'\nAvviare le trattative per il rinnovo.\n\nStudio Casa Offanengo');
+  return 'mailto:'+(c.emailFunz||'')+'?subject='+subj+'&body='+body;
+}
+function buildCal(c,prev,dataCustom){
+  var sd=scad(c);var nome=nomeCompletoContratto(c);
+  var d=new Date(sd);
+  if(prev)d.setMonth(d.getMonth()-prev.m);
+  if(dataCustom){var p=dataCustom.split('-');if(p.length===3)d=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+  var fmt=function(x){return x.getFullYear()+pad(x.getMonth()+1)+pad(x.getDate());};
+  var fine=new Date(d);fine.setDate(fine.getDate()+1);
+  var tit=encodeURIComponent('[SCO] Rinnovo: '+nome);
+  var det=encodeURIComponent('Cliente: '+nome+'\nImmobile: '+(c.imm||'—')+'\nScadenza: '+sd.toLocaleDateString('it-IT')+(prev?'\nPreavviso: '+prev.l:'')+(dataCustom?'\nData: '+dataCustom:''));
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+tit+'&dates='+fmt(d)+'/'+fmt(fine)+'&details='+det;
+}
+function logAlert(cId,tipo,desc){var c=getCt(cId);if(!c)return;if(!c.alog)c.alog=[];c.alog.push({d:T.toLocaleDateString('it-IT'),t:tipo,p:desc});sv();}
+function invMail(cId,pm,dataCustom){var c=getCt(cId);if(!c)return;var prev=null;if(pm!==undefined)for(var i=0;i<PRV.length;i++){if(PRV[i].m===pm){prev=PRV[i];break;}}window.location.href=buildMail(c,prev,dataCustom||'');logAlert(cId,'email',prev?prev.l:dataCustom||'immediato');setTimeout(function(){apriAlert(cId);},600);}
+function invCal(cId,pm,dataCustom){var c=getCt(cId);if(!c)return;var prev=null;if(pm!==undefined)for(var i=0;i<PRV.length;i++){if(PRV[i].m===pm){prev=PRV[i];break;}}window.open(buildCal(c,prev,dataCustom||''),'_blank');logAlert(cId,'calendar',prev?prev.l:dataCustom||'immediato');setTimeout(function(){apriAlert(cId);},600);}
+function salvaEF(cId,v){var c=getCt(cId);if(c){c.emailFunz=v;sv();}}
+function togPrev(cId,m,on){var c=getCt(cId);if(!c)return;if(!c.prev)c.prev=[24,12,6];var idx=c.prev.indexOf(m);if(on&&idx<0)c.prev.push(m);if(!on&&idx>=0)c.prev.splice(idx,1);sv();}
+
+function apriAlert(cId){
+  var c=getCt(cId);if(!c)return;
+  var sd=scad(c);
+  var mesi=(sd-T)/(86400000*30.44);
+  var bcls=mesi<=6?'surg':mesi<=18?'sprt':'snrm';
+  var bTxt=mesi<=6?'Urgente':mesi<=18?'Presto':'Nei tempi';
+  var prevAtt=c.prev||[24,12,6];
+  var chkHTML='';
+  for(var i=0;i<PRV.length;i++){var p=PRV[i],ch=prevAtt.indexOf(p.m)>=0;chkHTML+='<label style="display:flex;align-items:center;gap:6px;margin:0 0 5px;font-size:12px;cursor:pointer"><input type="checkbox"'+(ch?' checked':'')+' onchange="togPrev(\''+cId+'\','+p.m+',this.checked)" style="width:auto"> '+p.l+'</label>';}
+  var logHTML='';
+  if(c.alog&&c.alog.length){logHTML='<div class="st">Storico invii</div>';for(var i=c.alog.length-1;i>=0&&i>c.alog.length-6;i--){var lg=c.alog[i];logHTML+='<div class="slog">'+lg.d+' — '+lg.t+(lg.p?' ('+lg.p+')':'')+'</div>';}}
+  var optsHTML=PRV.map(function(p){return '<option value="'+p.m+'">'+p.l+'</option>';}).join('');
+  var annoP=T.getFullYear()+1;
+  var primoGen=new Date(annoP,0,1);
+  while(primoGen.getDay()!==1)primoGen.setDate(primoGen.getDate()+1);
+  var dataConsigl=annoP+'-01-'+pad(primoGen.getDate());
+
+  document.getElementById('mb').innerHTML=
+    '<h3>Promemoria scadenza — '+nomeCompletoContratto(c)+'</h3>'
+    +'<div class="kv"><span class="k">Immobile</span><span>'+(c.imm||'—')+'</span></div>'
+    +'<div class="kv"><span class="k">Scadenza contratto</span><span><b>'+sd.toLocaleDateString('it-IT')+'</b></span></div>'
+    +'<div class="kv"><span class="k">Tempo residuo</span><span><span class="sbadge '+bcls+'">'+bTxt+'</span> '+mesi.toFixed(1)+' mesi</span></div>'
+    +'<div class="kv"><span class="k">Email funzionario</span><span><input id="ef" value="'+(c.emailFunz||'')+'" placeholder="funzionario@studiocasa.it" style="width:200px;padding:4px 8px;font-size:12px" onchange="salvaEF(\''+cId+'\',this.value)"></span></div>'
+    +'<div class="st">Invia promemoria adesso</div>'
+    +'<div class="arow"><button class="bml" onclick="invMail(\''+cId+'\',undefined,\'\')">&#9993; Email immediata</button><button class="bcl" onclick="invCal(\''+cId+'\',undefined,\'\')">&#128197; Google Calendar ora</button></div>'
+    +'<div class="st">Promemoria con preavviso</div>'
+    +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><select id="spv" style="width:auto;padding:4px 8px;font-size:12px">'+optsHTML+'</select><button class="bml" onclick="invMail(\''+cId+'\',parseInt(document.getElementById(\'spv\').value),\'\')">Email</button><button class="bcl" onclick="invCal(\''+cId+'\',parseInt(document.getElementById(\'spv\').value),\'\')">Calendario</button></div>'
+    +'<div class="st">Promemoria annuale — data personalizzata</div>'
+    +'<div class="al ai" style="margin-bottom:8px;font-size:12px">&#128161; Consiglio: imposta il promemoria a inizio anno per pianificare in anticipo.<br>Data consigliata: <b>'+primoGen.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'</b></div>'
+    +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input type="date" id="dCustom" value="'+dataConsigl+'" style="width:auto;padding:4px 8px;font-size:12px"><button class="bml" onclick="invMail(\''+cId+'\',undefined,document.getElementById(\'dCustom\').value)">Email</button><button class="bcl" onclick="invCal(\''+cId+'\',undefined,document.getElementById(\'dCustom\').value)">Calendario</button></div>'
+    +'<div class="st">Canali attivi per questo contratto</div><div style="display:flex;flex-direction:column;gap:5px">'+chkHTML+'</div>'
+    +'<div class="st">Canali (prossimamente)</div><div class="arow"><button class="bwa">&#128172; WhatsApp</button><button class="btg">&#9992; Telegram</button></div><p style="font-size:11px;color:var(--gr);margin-top:4px">WhatsApp e Telegram nella prossima versione</p>'
+    +logHTML+'<div style="margin-top:14px"><button class="btn" onclick="chiudi()">Chiudi</button></div>';
+  document.getElementById('ovl').classList.add('on');
+}
+
+function go(t){
   TAB=t;
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-  ['dashboard','contratti','clienti','scadenze','pagamenti','nuovo','test'].forEach((l,i)=>{
-    if(l===t)document.querySelectorAll('.nav button')[i].classList.add('active');
-  });
-  render();
+  CURRENT_OWNERS=[];
+  var btns=document.querySelectorAll('.nav button');
+  var tabs=['db','ct','cl','sc','pg','nw','ts'];
+  for(var i=0;i<btns.length;i++){btns[i].classList.remove('on');if(tabs[i]===t)btns[i].classList.add('on');}
+  rend();
 }
-function render(){
-  const el=document.getElementById('content');
-  const map={dashboard:rDashboard,contratti:rContratti,clienti:rClienti,scadenze:rScadenze,pagamenti:rPagamenti,nuovo:rNuovo,test:rTest};
-  el.innerHTML=(map[TAB]||rDashboard)();
+function rend(){
+  var el=document.getElementById('pg');
+  if(TAB==='db')el.innerHTML=vDB();
+  else if(TAB==='ct')el.innerHTML=vCT();
+  else if(TAB==='cl')el.innerHTML=vCL();
+  else if(TAB==='sc')el.innerHTML=vSC();
+  else if(TAB==='pg')el.innerHTML=vPG();
+  else if(TAB==='nw')el.innerHTML=vNW();
+  else if(TAB==='ts')el.innerHTML=vTS();
+  setTimeout(function(){
+    if(document.getElementById('nIm'))initAC('nIm','acIm');
+    if(document.getElementById('cAd'))initAC('cAd','acAd');
+  },100);
+  if(TAB==='nw')renderOwnersPicker();
 }
 
-function rDashboard(){
-  const nY=TODAY.getFullYear();let tD=0,tP=0,att=0;const alerts=[];
-  DB.contratti.forEach(c=>{
-    const scad=getScad(c);const dMs=scad-TODAY;const dY=dMs/(86400000*365);
+function vDB(){
+  var nY=T.getFullYear(),tD=0,tP=0,att=0,als='';
+  for(var i=0;i<DB.ct.length;i++){
+    var c=DB.ct[i],sd=scad(c),dMs=sd-T,dY=dMs/(86400000*365);
     if(dMs>0)att++;
-    if(dMs>0&&dY<=1)alerts.push({t:'danger',m:'<b>'+c.cliente+'</b> — '+(c.immobile||'')+' scade <b>'+scad.toLocaleDateString('it-IT')+'</b> — rinnovo urgente'});
-    else if(dMs>0&&dY<=2)alerts.push({t:'warn',m:'<b>'+c.cliente+'</b> — '+(c.immobile||'')+' scade <b>'+scad.toLocaleDateString('it-IT')+'</b> — avviare trattativa'});
-    const r=calcCanone(c,nY);if(r&&!r.isFree){tD+=r.totale;if(r.pagato)tP+=r.totale;}
-  });
-  const pend=tD-tP;
-  return '<div class="grid3"><div class="metric"><div class="lbl">Contratti attivi</div><div class="val">'+att+'</div></div>'
-    +'<div class="metric"><div class="lbl">Dovuto '+nY+'</div><div class="val">€'+tD.toFixed(2)+'</div></div>'
-    +'<div class="metric"><div class="lbl">Da incassare</div><div class="val'+(pend>0?' warn':'')+'">'+( pend>0?'€'+pend.toFixed(2):'Tutto ok ✓')+'</div></div></div>'
-    +(alerts.length?'<div style="margin-bottom:14px">'+alerts.map(a=>'<div class="alert alert-'+a.t+'">'+a.m+'</div>').join('')+'</div>':'')
-    +'<div class="card"><h2>Riepilogo '+nY+'</h2>'+rTabella(nY)+'</div>';
+    var nm=nomeCompletoContratto(c);
+    if(dMs>0&&dY<=1)als+='<div class="al ad"><b>'+nm+'</b> — '+(c.imm||'')+' scade <b>'+sd.toLocaleDateString('it-IT')+'</b> <button class="btn bs" style="margin-left:6px" onclick="apriAlert(\''+c.id+'\')">Promemoria</button></div>';
+    else if(dMs>0&&dY<=2)als+='<div class="al aw"><b>'+nm+'</b> — '+(c.imm||'')+' scade <b>'+sd.toLocaleDateString('it-IT')+'</b> <button class="btn bs" style="margin-left:6px" onclick="apriAlert(\''+c.id+'\')">Promemoria</button></div>';
+    var r=calc(c,nY);if(r&&!r.free){tD+=r.tot;if(r.pag)tP+=r.tot;}
+  }
+  var pend=r2(tD-tP);
+  return '<div class="g3">'
+    +'<div class="met"><div class="ml">Contratti attivi</div><div class="mv">'+att+'</div></div>'
+    +'<div class="met"><div class="ml">Dovuto '+nY+'</div><div class="mv">€'+tD.toFixed(2)+'</div></div>'
+    +'<div class="met"><div class="ml">Da incassare</div><div class="mv'+(pend>0?' w':'')+'">'+( pend>0?'€'+pend.toFixed(2):'Ok')+'</div></div>'
+    +'</div>'+(als?'<div style="margin-bottom:12px">'+als+'</div>':'')
+    +'<div class="card"><h2>Riepilogo '+nY+'</h2>'+tab(nY)+'</div>';
 }
 
-function rTabella(anno){
-  if(!DB.contratti.length)return'<div class="empty">Nessun contratto. Clicca "+ Nuovo contratto" per iniziare.</div>';
-  let rows='';
-  DB.contratti.forEach(c=>{
-    const r=calcCanone(c,anno);if(!r)return;
-    rows+='<tr><td><b>'+c.cliente+'</b><br><small style="color:var(--gray)">'+(c.immobile||'')+'</small></td>'
-      +'<td>'+(r.isFree?'<span class="badge badge-info">Gratuito</span>':'€'+r.totale.toFixed(2))+'</td>'
-      +'<td>'+(r.isFree?'—':r.pagato?'<span class="badge badge-ok">Pagato</span>':'<span class="badge badge-danger">Non pagato</span>')+'</td>'
-      +'<td><button class="btn btn-sm" onclick="openDett(\''+c.id+'\')">Dettaglio</button></td></tr>';
-  });
-  return'<div class="scroll-x"><table><thead><tr><th>Cliente / Immobile</th><th>Totale IVA incl.</th><th>Stato '+anno+'</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+function tab(anno){
+  if(!DB.ct.length)return '<div class="em">Nessun contratto. Clicca "+ Nuovo contratto".</div>';
+  var rows='';
+  for(var i=0;i<DB.ct.length;i++){
+    var c=DB.ct[i],r=calc(c,anno);if(!r)continue;
+    rows+='<tr><td><b>'+nomeCompletoContratto(c)+'</b><br><small style="color:var(--gr)">'+(c.imm||'')+'</small></td>'
+      +'<td>'+(r.free?'<span class="bx bin">Gratuito</span>':'€'+r.tot.toFixed(2))+'</td>'
+      +'<td>'+(r.free?'—':r.pag?'<span class="bx bok">Pagato</span>':'<span class="bx bdn">Non pagato</span>')+'</td>'
+      +'<td><button class="btn bs" onclick="apriDett(\''+c.id+'\')">Dettaglio</button></td></tr>';
+  }
+  return '<div class="sx"><table><thead><tr><th>Cliente</th><th>Totale IVA incl.</th><th>Stato '+anno+'</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 
-function rContratti(){
-  if(!DB.contratti.length)return'<div class="card"><div class="empty">Nessun contratto. <button class="btn btn-primary" onclick="showTab(\'nuovo\')">Crea il primo</button></div></div>';
-  let rows='';
-  DB.contratti.forEach(c=>{
-    const scad=getScad(c);const dMs=scad-TODAY;const dY=dMs/(86400000*365);
-    const badge=dMs<=0?'<span class="badge badge-gray">Scaduto</span>':dY<=1?'<span class="badge badge-danger">Scade &lt;1a</span>':dY<=2?'<span class="badge badge-warn">Scade &lt;2a</span>':'<span class="badge badge-ok">Attivo</span>';
-    rows+='<tr><td><b>'+c.cliente+'</b></td><td>'+(c.immobile||'—')+'</td><td>€'+parseFloat(c.canoneMensile).toFixed(0)+'/mese</td>'
-      +'<td>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</td><td>'+scad.toLocaleDateString('it-IT')+'</td><td>'+badge+'</td>'
-      +'<td style="white-space:nowrap"><button class="btn btn-sm" onclick="openDett(\''+c.id+'\')">Dettaglio</button> '
-      +'<button class="btn btn-sm btn-danger" onclick="del(\''+c.id+'\',\'c\')">Elimina</button></td></tr>';
-  });
-  return'<div class="card"><h2>Contratti ('+DB.contratti.length+')</h2><div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Immobile</th><th>Canone</th><th>Inizio</th><th>Scadenza</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+function vCT(){
+  if(!DB.ct.length)return '<div class="card"><div class="em">Nessun contratto. <button class="btn bp" onclick="go(\'nw\')">Crea il primo</button></div></div>';
+  var rows='';
+  for(var i=0;i<DB.ct.length;i++){
+    var c=DB.ct[i],sd=scad(c),dMs=sd-T,dY=dMs/(86400000*365);
+    var badge=dMs<=0?'<span class="bx bgr">Scaduto</span>':dY<=1?'<span class="bx bdn">Scade &lt;1a</span>':dY<=2?'<span class="bx bwn">Scade &lt;2a</span>':'<span class="bx bok">Attivo</span>';
+    rows+='<tr><td><b>'+nomeCompletoContratto(c)+'</b><br><span class="codice">'+(c.cod||'—')+'</span></td>'
+      +'<td>'+(c.imm||'—')+'</td>'
+      +'<td>€'+parseFloat(c.cm).toFixed(0)+'/mese</td>'
+      +'<td>'+new Date(c.di).toLocaleDateString('it-IT')+'</td>'
+      +'<td>'+sd.toLocaleDateString('it-IT')+'</td>'
+      +'<td>'+badge+'</td>'
+      +'<td style="white-space:nowrap">'
+      +'<button class="btn bs" onclick="apriDett(\''+c.id+'\')">Dettaglio</button> '
+      +'<button class="btn bs bmod" onclick="apriModifica(\''+c.id+'\')" title="Modifica">&#9998;</button> '
+      +'<button class="btn bs" onclick="apriAlert(\''+c.id+'\')" title="Promemoria">&#9993;</button> '
+      +'<button class="btn bs bd" onclick="delCt(\''+c.id+'\')">Elimina</button></td></tr>';
+  }
+  return '<div class="card"><h2>Contratti ('+DB.ct.length+')</h2><div class="sx"><table><thead><tr><th>Cliente / Codice</th><th>Immobile</th><th>Canone</th><th>Inizio</th><th>Scadenza</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
-function rClienti(){
-  return'<div class="card"><h2>Clienti ('+DB.clienti.length+')</h2>'
-    +'<button class="btn btn-primary" style="margin-bottom:14px" onclick="openNuovoCliente()">+ Aggiungi cliente</button>'
-    +(DB.clienti.length
-      ?'<div class="scroll-x"><table><thead><tr><th>Nome</th><th>Cod. Fiscale</th><th>P.IVA</th><th>Telefono</th><th>Email</th><th></th></tr></thead><tbody>'
-        +DB.clienti.map(cl=>'<tr><td><b>'+cl.nome+'</b></td><td>'+(cl.cf||'—')+'</td><td>'+(cl.piva||'—')+'</td><td>'+(cl.tel||'—')+'</td><td>'+(cl.email||'—')+'</td>'
-          +'<td><button class="btn btn-sm btn-danger" onclick="del(\''+cl.id+'\',\'k\')">Elimina</button></td></tr>').join('')
-        +'</tbody></table></div>'
-      :'<div class="empty">Nessun cliente registrato</div>')
+function vCL(){
+  var rows='';
+  for(var i=0;i<DB.cl.length;i++){
+    var x=DB.cl[i];
+    rows+='<tr><td><span class="codice">'+x.cod+'</span></td><td><b>'+x.nome+'</b></td>'
+      +'<td>'+(x.cf||'<span style="color:var(--dr);font-size:11px">Mancante</span>')+'</td>'
+      +'<td>'+(x.pi||'—')+'</td><td>'+(x.tel||'—')+'</td><td>'+(x.em||'—')+'</td>'
+      +'<td><button class="btn bs bd" onclick="delCl(\''+x.id+'\')">Elimina</button></td></tr>';
+  }
+  return '<div class="card"><h2>Clienti ('+DB.cl.length+')</h2>'
+    +'<button class="btn bp" style="margin-bottom:12px" onclick="apriNC()">+ Aggiungi cliente</button>'
+    +(DB.cl.length?'<div class="sx"><table><thead><tr><th>Codice</th><th>Nome</th><th>C.F.</th><th>P.IVA</th><th>Tel</th><th>Email</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<div class="em">Nessun cliente registrato</div>')
     +'</div>';
 }
 
-function rScadenze(){
-  const items=[];
-  DB.contratti.forEach(c=>{const scad=getScad(c);const dMs=scad-TODAY;if(dMs>0)items.push({c,scad,dY:dMs/(86400000*365)});});
-  items.sort((a,b)=>a.scad-b.scad);
-  return'<div class="card"><h2>Scadenze contratti (8 anni)</h2>'
-    +(items.length?items.map(i=>{
-      let cls='alert-ok',msg='';
-      if(i.dY<=1){cls='alert-danger';msg=' — URGENTE: rinnovo immediato';}
-      else if(i.dY<=2){cls='alert-warn';msg=' — Avviare trattativa di rinnovo';}
-      return'<div class="alert '+cls+'"><b>'+i.c.cliente+'</b> — '+(i.c.immobile||'immobile')+' — scadenza <b>'+i.scad.toLocaleDateString('it-IT')+'</b> (tra '+i.dY.toFixed(1)+' anni)'+msg+'</div>';
-    }).join('')
-    :'<div class="empty">Nessuna scadenza imminente</div>')
-    +'</div>';
-}
-
-function rPagamenti(){
-  const nY=TODAY.getFullYear();
-  let html='<div class="card"><h2>Stato pagamenti</h2>';
-  [nY-1,nY,nY+1].forEach(anno=>{
-    html+='<div class="sec-title">'+anno+'</div>';
-    let rows='';
-    DB.contratti.forEach(c=>{
-      const r=calcCanone(c,anno);if(!r)return;
-      rows+='<tr><td><b>'+c.cliente+'</b><br><small style="color:var(--gray)">'+(c.immobile||'')+'</small></td>'
-        +'<td>'+(r.isFree?'<span class="badge badge-info">Gratuito</span>':'€'+r.totale.toFixed(2))+'</td>'
-        +'<td>'+(r.isFree?'—':r.pagato?'<span class="badge badge-ok">Pagato'+(r.dataPag?' il '+r.dataPag:'')+'</span>':'<span class="badge badge-danger">Non pagato</span>')+'</td>'
-        +'<td>'+(r.isFree?'':'<button class="btn btn-sm '+(r.pagato?'':'btn-green')+'" onclick="togglePag(\''+c.id+'\','+anno+','+(r.pagato?'false':'true')+')">'+(r.pagato?'Annulla':'Segna pagato')+'</button>')+'</td></tr>';
-    });
-    html+=rows?'<div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Importo</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p style="font-size:13px;color:var(--gray);padding:4px 0">Nessun contratto per questo anno</p>';
-  });
+function vSC(){
+  var items=[];
+  for(var i=0;i<DB.ct.length;i++){var c=DB.ct[i],sd=scad(c),dMs=sd-T;if(dMs>0)items.push({c:c,sd:sd,mesi:dMs/(86400000*30.44)});}
+  items.sort(function(a,b){return a.sd-b.sd;});
+  if(!items.length)return '<div class="card"><h2>Promemoria e Alert</h2><div class="em">Nessun contratto attivo</div></div>';
+  var html='<div class="card"><h2>Promemoria e Alert scadenze</h2><p style="font-size:12px;color:var(--gr);margin-bottom:12px">Configura email, Google Calendar e promemoria annuali per ogni contratto.</p>';
+  for(var i=0;i<items.length;i++){
+    var it=items[i],m=it.mesi;
+    var bcls=m<=6?'surg':m<=18?'sprt':'snrm';
+    var bTxt=m<=6?'Urgente':m<=18?'Presto':'Nei tempi';
+    var prevAtt=it.c.prev||[24,12,6];
+    var chips='';
+    for(var j=0;j<PRV.length;j++){if(prevAtt.indexOf(PRV[j].m)>=0)chips+='<span class="chip">'+PRV[j].l+'</span>';}
+    var logUlt='';
+    if(it.c.alog&&it.c.alog.length){var ul=it.c.alog[it.c.alog.length-1];logUlt='<div class="slog">Ultimo: '+ul.d+' via '+ul.t+(ul.p?' ('+ul.p+')':'')+'</div>';}
+    html+='<div class="acard">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+      +'<div><b style="font-size:13px;color:var(--nv)">'+nomeCompletoContratto(it.c)+'</b>'
+      +(it.c.cod?' &nbsp;<span class="codice">'+it.c.cod+'</span>':'')
+      +' &mdash; '+(it.c.imm||'immobile')
+      +'<div style="font-size:12px;color:var(--gr);margin-top:2px">Scadenza: <b>'+it.sd.toLocaleDateString('it-IT')+'</b> — tra '+m.toFixed(1)+' mesi</div></div>'
+      +'<span class="sbadge '+bcls+'">'+bTxt+'</span></div>'
+      +'<div style="font-size:12px;color:var(--gr)">Promemoria attivi: '+(chips||'<i>nessuno</i>')+'</div>'+logUlt
+      +'<div class="arow" style="margin-top:8px"><button class="bml" onclick="invMail(\''+it.c.id+'\',undefined,\'\')">&#9993; Email ora</button><button class="bcl" onclick="invCal(\''+it.c.id+'\',undefined,\'\')">&#128197; Calendar ora</button><button class="btn bp bs" onclick="apriAlert(\''+it.c.id+'\')">Gestisci promemoria</button></div></div>';
+  }
   return html+'</div>';
 }
 
-function rNuovo(){
-  const opts=DB.clienti.map(c=>'<option value="'+c.id+'">'+c.nome+'</option>').join('');
-  return'<div class="card"><h2>Nuovo contratto di gestione</h2>'
-    +'<div class="row-flex"><div><label>Cliente *</label><select id="nc-cl"><option value="">-- Seleziona --</option>'+opts+'</select>'
-    +'<div style="margin-top:8px"><button class="btn btn-sm" onclick="openNuovoCliente()">+ Crea nuovo cliente</button></div></div>'
-    +'<div><label>Immobile (indirizzo)</label><input id="nc-imm" placeholder="Via Roma 1, Offanengo"></div></div>'
-    +'<div class="row-flex"><div><label>Canone locazione mensile (€) *</label><input id="nc-can" type="number" min="0" placeholder="800"></div>'
-    +'<div><label>Data inizio contratto gestione *</label><input id="nc-dat" type="date"></div></div>'
-    +'<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'
-    +'<label style="display:flex;align-items:center;gap:8px;margin:0;color:var(--black)"><input type="checkbox" id="nc-acq" style="width:auto;accent-color:var(--navy)"> Immobile acquistato tramite Studio Casa Offanengo (1° anno gratuito)</label>'
-    +'<label style="display:flex;align-items:center;gap:8px;margin:0;color:var(--black)"><input type="checkbox" id="nc-iva" style="width:auto;accent-color:var(--navy)" checked> Soggetto a IVA 22%</label></div>'
-    +'<label>Note</label><textarea id="nc-not" rows="2" placeholder="Note libere..."></textarea>'
-    +'<div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-primary" onclick="salvaContratto()">Salva contratto</button><button class="btn" onclick="showTab(\'contratti\')">Annulla</button></div>'
-    +'<div id="nc-msg" style="margin-top:8px"></div></div>';
+function vPG(){
+  var nY=T.getFullYear();
+  var html='<div class="card"><h2>Stato pagamenti</h2>';
+  var aa=[nY-1,nY,nY+1];
+  for(var a=0;a<aa.length;a++){
+    var anno=aa[a];html+='<div class="st">'+anno+'</div>';
+    var rows='';
+    for(var i=0;i<DB.ct.length;i++){
+      var c=DB.ct[i],r=calc(c,anno);if(!r)continue;
+      rows+='<tr><td><b>'+nomeCompletoContratto(c)+'</b><br><small style="color:var(--gr)">'+(c.imm||'')+'</small></td>'
+        +'<td>'+(r.free?'<span class="bx bin">Gratuito</span>':'€'+r.tot.toFixed(2))+'</td>'
+        +'<td>'+(r.free?'—':r.pag?'<span class="bx bok">Pagato'+(r.dp?' il '+r.dp:'')+'</span>':'<span class="bx bdn">Non pagato</span>')+'</td>'
+        +'<td style="white-space:nowrap">'
+        +(r.free?'':'<button class="btn bs '+(r.pag?'':'bg')+'" onclick="togP(\''+c.id+'\','+anno+','+(!r.pag)+')">'+(r.pag?'Annulla':'Segna pagato')+'</button> ')
+        +(r.free?'':'<button class="bpf btn" onclick="proforma(\''+c.id+'\','+anno+')">Pro-forma</button>')
+        +'</td></tr>';
+    }
+    html+=rows?'<div class="sx"><table><thead><tr><th>Cliente</th><th>Importo</th><th>Stato</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'<p style="font-size:13px;color:var(--gr);padding:4px 0">Nessun contratto per questo anno</p>';
+  }
+  return html+'</div>';
 }
 
-function rTest(){
-  const res=runTests();const pass=res.filter(r=>r.ok).length;const fail=res.filter(r=>!r.ok).length;
-  return'<div class="card"><h2>Test automatico motore di calcolo</h2>'
-    +'<div class="alert '+(fail===0?'alert-ok':'alert-danger')+'" style="margin-bottom:14px">'+(fail===0?'Tutti i test superati!':'Attenzione: test falliti.')+' <b>'+pass+'/'+res.length+' passati</b></div>'
-    +'<div style="background:var(--gray-lighter);border-radius:8px;padding:6px">'
-    +res.map(r=>'<div class="test-row"><span class="'+(r.ok?'tp':'tf')+'">'+(r.ok?'PASS':'FAIL')+'</span> &nbsp;'+r.name+' → atteso <b>'+r.expected+'</b>, ottenuto <b>'+(typeof r.got==='number'?Math.round(r.got*100)/100:r.got)+'</b></div>').join('')
-    +'</div><div style="margin-top:12px"><button class="btn btn-primary" onclick="render()">Riesegui</button></div></div>';
+// NUOVO CONTRATTO con proprietari multipli
+function vNW(){
+  CURRENT_OWNERS=[];
+  return '<div class="card"><h2>Nuovo contratto di gestione</h2>'
+    +'<label>Proprietari dell\'immobile * <small style="color:var(--gr);font-weight:400">(seleziona 1 o più clienti)</small></label>'
+    +'<div id="ownersPicker"></div>'
+    +'<div class="rf"><div><label>Immobile *</label><div class="ac-wrap"><input id="nIm" placeholder="Inizia a scrivere l\'indirizzo..." autocomplete="off"><div class="ac-list" id="acIm" style="display:none"></div></div></div></div>'
+    +'<div class="rf"><div><label>Canone mensile (€) *</label><input id="nCm" type="number" min="0" placeholder="800"></div>'
+    +'<div><label>Data inizio *</label><input id="nDt" type="date"></div></div>'
+    +'<div class="rf"><div><label>Email funzionario responsabile</label><input id="nEf" placeholder="funzionario@studiocasa.it"></div></div>'
+    +'<div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">'
+    +'<label style="display:flex;align-items:center;gap:7px;margin:0;color:var(--bk)"><input type="checkbox" id="nAq" style="width:auto"> Acquistato tramite Studio Casa (1° anno gratuito)</label>'
+    +'<label style="display:flex;align-items:center;gap:7px;margin:0;color:var(--bk)"><input type="checkbox" id="nIv" style="width:auto" checked> Soggetto a IVA 22%</label></div>'
+    +'<label>Note</label><textarea id="nNt" rows="2"></textarea>'
+    +'<div style="margin-top:14px;display:flex;gap:7px">'
+    +'<button class="btn bp" onclick="salvaCt()">Salva contratto</button>'
+    +'<button class="btn" onclick="go(\'ct\')">Annulla</button></div>'
+    +'<div id="nMsg" style="margin-top:8px"></div></div>';
 }
 
-function salvaContratto(){
-  const cId=document.getElementById('nc-cl').value;
-  const can=document.getElementById('nc-can').value;
-  const dat=document.getElementById('nc-dat').value;
-  if(!cId||!can||!dat){document.getElementById('nc-msg').innerHTML='<div class="alert alert-danger">Compila tutti i campi obbligatori (*)</div>';return;}
-  const cl=DB.clienti.find(c=>c.id===cId);
-  DB.contratti.push({id:'c'+Date.now(),clienteId:cId,cliente:cl?cl.nome:cId,
-    immobile:document.getElementById('nc-imm').value.trim(),
-    canoneMensile:parseFloat(can),dataInizio:dat,
-    acquistoDaNoi:document.getElementById('nc-acq').checked,
-    iva:document.getElementById('nc-iva').checked,
-    note:document.getElementById('nc-not').value,sconti:[],pagamenti:[]});
-  save();showTab('contratti');
+function renderOwnersPicker(){
+  var el=document.getElementById('ownersPicker');if(!el)return;
+  var lista='';
+  if(!DB.cl.length){
+    lista='<div class="em" style="padding:16px">Nessun cliente disponibile. <button class="btn bs bp" onclick="apriNC()">+ Crea cliente</button></div>';
+  } else {
+    lista='<div class="ms-list">';
+    for(var i=0;i<DB.cl.length;i++){
+      var cl=DB.cl[i];var ch=CURRENT_OWNERS.indexOf(cl.id)>=0;
+      lista+='<label class="ms-item"><input type="checkbox"'+(ch?' checked':'')+' onchange="toggleOwner(\''+cl.id+'\',this.checked)"> <span class="codice">'+cl.cod+'</span> <b>'+cl.nome+'</b>'+(cl.cf?' <small style="color:var(--gr)">'+cl.cf+'</small>':'')+'</label>';
+    }
+    lista+='</div>';
+    lista+='<div style="margin-top:6px"><button class="btn bs" onclick="apriNC()">+ Crea nuovo cliente</button></div>';
+  }
+  lista+='<div class="ms-selected" id="selPreview">'+renderOwnersPreview()+'</div>';
+  el.innerHTML=lista;
 }
 
-function del(id,tipo){
-  if(!confirm('Eliminare questo elemento?'))return;
-  if(tipo==='c')DB.contratti=DB.contratti.filter(x=>x.id!==id);
-  else DB.clienti=DB.clienti.filter(x=>x.id!==id);
-  save();render();
+function renderOwnersPreview(){
+  if(!CURRENT_OWNERS.length)return '<span class="ms-empty">Nessun proprietario selezionato</span>';
+  var parts=[];
+  for(var i=0;i<CURRENT_OWNERS.length;i++){
+    var cl=getCl(CURRENT_OWNERS[i]);
+    if(cl)parts.push('<span class="ms-chip">'+(cl.cognome||cl.nome.split(' ').pop()).toUpperCase()+'</span>');
+  }
+  return '<span style="font-size:11px;color:var(--gr)">Nome contratto:</span> '+parts.join(' - ');
 }
 
-function togglePag(id,anno,stato){
-  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
-  if(!c.pagamenti)c.pagamenti=[];
-  const idx=c.pagamenti.findIndex(p=>p.anno===anno);
-  const oggi=TODAY.toLocaleDateString('it-IT');
-  if(idx>=0)c.pagamenti[idx]={anno,pagato:stato,data:stato?oggi:''};
-  else c.pagamenti.push({anno,pagato:stato,data:stato?oggi:''});
-  save();render();
+function toggleOwner(clId,on){
+  var idx=CURRENT_OWNERS.indexOf(clId);
+  if(on&&idx<0)CURRENT_OWNERS.push(clId);
+  if(!on&&idx>=0)CURRENT_OWNERS.splice(idx,1);
+  var pr=document.getElementById('selPreview');
+  if(pr)pr.innerHTML=renderOwnersPreview();
 }
 
-function openDett(id){
-  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
-  const anni=getAnni(c);const scad=getScad(c);
-  let righe='';
-  anni.forEach(anno=>{
-    const r=calcCanone(c,anno);if(!r)return;
-    const bl=r.isFree?'<span class="badge badge-info">Gratuito — acquisto tramite agenzia</span>':r.fascia?'<span class="badge badge-gray">1€/giorno</span>':'<span class="badge badge-gray">50% canone annuo</span>';
-    righe+='<div class="yr-row"><span class="yr">'+anno+'</span>'
-      +'<span class="amt">'+bl+'<br>'
-      +(r.isFree?'<span style="color:var(--gray)">Nessun importo dovuto</span>'
-        :'Imponibile <b>€'+r.netto.toFixed(2)+'</b> + IVA €'+r.iva.toFixed(2)+' = <b style="color:var(--navy)">€'+r.totale.toFixed(2)+'</b>')
-      +(r.sconto>0?' <span class="badge badge-warn">Sconto −€'+r.sconto.toFixed(2)+'</span>':'')
-      +(!r.isFree?r.pagato?'<br><span class="badge badge-ok">Pagato'+(r.dataPag?' il '+r.dataPag:'')+'</span>':'<br><span class="badge badge-danger">Non pagato</span>':'')
+function vTS(){
+  var res=runTests(),pass=0;
+  for(var i=0;i<res.length;i++)if(res[i].ok)pass++;
+  var fail=res.length-pass;
+  var rows='';
+  for(var i=0;i<res.length;i++){var r=res[i];rows+='<div class="tr2"><span class="'+(r.ok?'tp':'tf')+'">'+(r.ok?'PASS':'FAIL')+'</span>  '+r.name+' → atteso <b>'+r.exp+'</b> ottenuto <b>'+(typeof r.got==='number'?Math.round(r.got*100)/100:r.got)+'</b></div>';}
+  return '<div class="card"><h2>Test automatico</h2>'
+    +'<div class="al '+(fail===0?'ao':'ad')+'" style="margin-bottom:12px">'+(fail===0?'Tutti i test superati!':'Test falliti.')+' <b>'+pass+'/'+res.length+'</b></div>'
+    +'<div style="background:var(--gll);border-radius:7px;padding:6px">'+rows+'</div>'
+    +'<div style="margin-top:10px;display:flex;gap:7px"><button class="btn bp" onclick="rend()">Riesegui</button><button class="btn" onclick="demo()">Carica dati demo</button></div></div>';
+}
+
+function salvaCt(){
+  var cm=document.getElementById('nCm').value,dt=document.getElementById('nDt').value;
+  var msg=document.getElementById('nMsg');
+  if(!CURRENT_OWNERS.length){if(msg)msg.innerHTML='<div class="al ad">Seleziona almeno un proprietario nella lista sopra</div>';return;}
+  if(!cm){if(msg)msg.innerHTML='<div class="al ad">Inserisci il canone mensile</div>';return;}
+  if(!dt){if(msg)msg.innerHTML='<div class="al ad">Inserisci la data di inizio contratto</div>';return;}
+  var inp=document.getElementById('nIm');
+  DB.ct.push({
+    id:'c'+Date.now(),cod:genCodContratto(),
+    clIds:CURRENT_OWNERS.slice(),clId:CURRENT_OWNERS[0],
+    nome:nomeComposto(CURRENT_OWNERS),
+    imm:inp?inp.value.trim():'',
+    lat:inp?inp.dataset.lat||'':'',
+    lon:inp?inp.dataset.lon||'':'',
+    cm:parseFloat(cm),di:dt,
+    acq:document.getElementById('nAq').checked,
+    iva:document.getElementById('nIv').checked,
+    emailFunz:document.getElementById('nEf').value,
+    nt:document.getElementById('nNt').value,
+    sco:[],pag:[],prev:[24,12,6],alog:[]
+  });
+  sv();CURRENT_OWNERS=[];go('ct');
+}
+
+// MODIFICA CONTRATTO
+function apriModifica(id){
+  var c=getCt(id);if(!c)return;
+  CURRENT_OWNERS=(c.clIds||[]).slice();
+  var owList='';
+  if(!DB.cl.length){
+    owList='<div class="em" style="padding:12px">Nessun cliente disponibile</div>';
+  } else {
+    owList='<div class="ms-list">';
+    for(var i=0;i<DB.cl.length;i++){
+      var cl=DB.cl[i];var ch=CURRENT_OWNERS.indexOf(cl.id)>=0;
+      owList+='<label class="ms-item"><input type="checkbox"'+(ch?' checked':'')+' onchange="toggleOwnerMod(\''+cl.id+'\',this.checked)"> <span class="codice">'+cl.cod+'</span> <b>'+cl.nome+'</b></label>';
+    }
+    owList+='</div>';
+  }
+  document.getElementById('mb').innerHTML=
+    '<h3>Modifica contratto — <span class="codice">'+(c.cod||'')+'</span></h3>'
+    +'<div class="al ai" style="margin-bottom:10px;font-size:12px">&#9998; Puoi modificare tutti i dati. Le modifiche a canone e date aggiorneranno il calcolo automatico di tutti gli anni.</div>'
+    +'<label>Proprietari dell\'immobile *</label>'
+    +'<div id="owListMod">'+owList+'</div>'
+    +'<div class="ms-selected" id="selPreviewMod">'+renderOwnersPreview()+'</div>'
+    +'<div class="rf"><div><label>Immobile</label><div class="ac-wrap"><input id="mIm" value="'+(c.imm||'').replace(/"/g,'&quot;')+'" autocomplete="off"><div class="ac-list" id="acImMod" style="display:none"></div></div></div></div>'
+    +'<div class="rf"><div><label>Canone mensile (€) *</label><input id="mCm" type="number" min="0" value="'+c.cm+'"></div>'
+    +'<div><label>Data inizio *</label><input id="mDt" type="date" value="'+c.di+'"></div></div>'
+    +'<div class="rf"><div><label>Email funzionario</label><input id="mEf" value="'+(c.emailFunz||'')+'"></div></div>'
+    +'<div style="margin-top:12px;display:flex;flex-direction:column;gap:7px">'
+    +'<label style="display:flex;align-items:center;gap:7px;margin:0;color:var(--bk)"><input type="checkbox" id="mAq" style="width:auto"'+(c.acq?' checked':'')+'> Acquistato tramite Studio Casa (1° anno gratuito)</label>'
+    +'<label style="display:flex;align-items:center;gap:7px;margin:0;color:var(--bk)"><input type="checkbox" id="mIv" style="width:auto"'+(c.iva!==false?' checked':'')+'> Soggetto a IVA 22%</label></div>'
+    +'<label>Note</label><textarea id="mNt" rows="2">'+(c.nt||'')+'</textarea>'
+    +'<div style="margin-top:14px;display:flex;gap:7px;flex-wrap:wrap">'
+    +'<button class="btn bp" onclick="salvaModifica(\''+id+'\')">Salva modifiche</button>'
+    +'<button class="btn" onclick="apriDett(\''+id+'\')">Annulla</button></div>'
+    +'<div id="mMsg" style="margin-top:8px"></div>';
+  document.getElementById('ovl').classList.add('on');
+  setTimeout(function(){if(document.getElementById('mIm'))initAC('mIm','acImMod');},100);
+}
+
+function toggleOwnerMod(clId,on){
+  var idx=CURRENT_OWNERS.indexOf(clId);
+  if(on&&idx<0)CURRENT_OWNERS.push(clId);
+  if(!on&&idx>=0)CURRENT_OWNERS.splice(idx,1);
+  var pr=document.getElementById('selPreviewMod');
+  if(pr)pr.innerHTML=renderOwnersPreview();
+}
+
+function salvaModifica(id){
+  var c=getCt(id);if(!c)return;
+  var cm=document.getElementById('mCm').value,dt=document.getElementById('mDt').value;
+  if(!CURRENT_OWNERS.length||!cm||!dt){document.getElementById('mMsg').innerHTML='<div class="al ad">Proprietari, canone e data inizio sono obbligatori</div>';return;}
+  var cmOld=c.cm,diOld=c.di,acqOld=c.acq;
+  var inp=document.getElementById('mIm');
+  c.clIds=CURRENT_OWNERS.slice();
+  c.clId=CURRENT_OWNERS[0];
+  c.nome=nomeComposto(CURRENT_OWNERS);
+  c.imm=inp?inp.value.trim():c.imm;
+  if(inp&&inp.dataset.lat){c.lat=inp.dataset.lat;c.lon=inp.dataset.lon;}
+  c.cm=parseFloat(cm);
+  c.di=dt;
+  c.acq=document.getElementById('mAq').checked;
+  c.iva=document.getElementById('mIv').checked;
+  c.emailFunz=document.getElementById('mEf').value;
+  c.nt=document.getElementById('mNt').value;
+  if(!c.modLog)c.modLog=[];
+  c.modLog.push({d:T.toLocaleDateString('it-IT'),cm_old:cmOld,cm_new:c.cm,di_old:diOld,di_new:c.di,acq_old:acqOld,acq_new:c.acq});
+  sv();CURRENT_OWNERS=[];apriDett(id);
+}
+
+function delCt(id){if(!confirm('Eliminare questo contratto?'))return;var a=[];for(var i=0;i<DB.ct.length;i++)if(DB.ct[i].id!==id)a.push(DB.ct[i]);DB.ct=a;sv();rend();}
+function delCl(id){if(!confirm('Eliminare?'))return;var a=[];for(var i=0;i<DB.cl.length;i++)if(DB.cl[i].id!==id)a.push(DB.cl[i]);DB.cl=a;sv();rend();}
+
+function togP(id,anno,stato){
+  var c=getCt(id);if(!c)return;
+  if(!c.pag)c.pag=[];
+  var idx=-1;for(var i=0;i<c.pag.length;i++){if(c.pag[i].anno===anno){idx=i;break;}}
+  var oggi=T.toLocaleDateString('it-IT');
+  if(idx>=0)c.pag[idx]={anno:anno,pag:stato,d:stato?oggi:''};else c.pag.push({anno:anno,pag:stato,d:stato?oggi:''});
+  sv();rend();
+}
+
+function apriDett(id){
+  var c=getCt(id);if(!c)return;
+  var an=anni(c),sd=scad(c),righe='';
+  for(var i=0;i<an.length;i++){
+    var anno=an[i],r=calc(c,anno);if(!r)continue;
+    var bl=r.free?'<span class="bx bin">Gratuito — acquisto agenzia</span>':r.fas?'<span class="bx bgr">1€/giorno</span>':'<span class="bx bgr">50% canone mensile</span>';
+    var pi=r.periodo?'<br><small style="color:var(--gr)">Periodo: '+r.periodo+'</small>':'';
+    righe+='<div class="yr"><span class="yn">'+anno+'</span>'
+      +'<span class="ya">'+bl+pi+'<br>'
+      +(r.free?'<span style="color:var(--gr)">Nessun importo dovuto</span>'
+        :'Imponibile <b>€'+r.net.toFixed(2)+'</b> + IVA €'+r.iva.toFixed(2)+' = <b style="color:var(--nv)">€'+r.tot.toFixed(2)+'</b>')
+      +(r.sc>0?' <span class="bx bwn">Sconto -€'+r.sc.toFixed(2)+'</span>':'')
+      +(!r.free?(r.pag?'<br><span class="bx bok">Pagato'+(r.dp?' il '+r.dp:'')+'</span>':'<br><span class="bx bdn">Non pagato</span>'):'')
       +'</span>'
-      +'<div class="acts">'
-      +(r.isFree?'':r.pagato
-        ?'<button class="btn btn-sm" onclick="togglePag(\''+c.id+'\','+anno+',false);openDett(\''+c.id+'\')">Annulla</button>'
-        :'<button class="btn btn-sm btn-green" onclick="togglePag(\''+c.id+'\','+anno+',true);openDett(\''+c.id+'\')">Segna pagato</button>')
-      +(r.isFree?'':'<button class="btn btn-sm" onclick="openSconto(\''+c.id+'\','+anno+')">Sconto</button>')
+      +'<div class="yb">'
+      +(r.free?'':r.pag
+        ?'<button class="btn bs" onclick="togP(\''+id+'\','+anno+',false);apriDett(\''+id+'\')">Annulla</button>'
+        :'<button class="btn bs bg" onclick="togP(\''+id+'\','+anno+',true);apriDett(\''+id+'\')">Segna pagato</button>')
+      +(r.free?'':'<button class="btn bs" onclick="apriSco(\''+id+'\','+anno+')">Sconto</button>')
+      +(r.free?'':'<button class="bpf btn" onclick="proforma(\''+id+'\','+anno+');chiudi()">Pro-forma</button>')
       +'</div></div>';
-  });
-  document.getElementById('modal-body').innerHTML=
-    '<h3>'+c.cliente+' — '+(c.immobile||'Contratto gestione')+'</h3>'
-    +'<div class="kv"><span class="k">Canone locazione</span><span>€'+parseFloat(c.canoneMensile).toFixed(2)+'/mese — €'+(parseFloat(c.canoneMensile)*12).toFixed(2)+'/anno</span></div>'
-    +'<div class="kv"><span class="k">Fascia gestione</span><span>'+(parseFloat(c.canoneMensile)*12<8760?'Bassa — 1€/giorno':'Alta — 50% canone annuo')+'</span></div>'
-    +'<div class="kv"><span class="k">Data inizio</span><span>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</span></div>'
-    +'<div class="kv"><span class="k">Scadenza (8 anni)</span><span>'+scad.toLocaleDateString('it-IT')+'</span></div>'
-    +'<div class="kv"><span class="k">Acquisto tramite agenzia</span><span>'+(c.acquistoDaNoi?'Sì — 1° anno gratuito':'No')+'</span></div>'
-    +(c.note?'<div class="kv"><span class="k">Note</span><span>'+c.note+'</span></div>':'')
-    +'<div class="sec-title">Piano canoni anno per anno</div>'+righe
-    +'<div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">'
-    +'<button class="btn btn-primary" onclick="stampaPDF(\''+c.id+'\')">Stampa / Salva PDF</button>'
-    +'<button class="btn" onclick="closeModal()">Chiudi</button></div>';
-  document.getElementById('modal-bg').classList.add('open');
+  }
+  var mapsLink=c.lat&&c.lon?'<a href="https://www.google.com/maps?q='+c.lat+','+c.lon+'" target="_blank" style="font-size:12px;color:var(--nv)">&#127759; Vedi su Maps</a>':'';
+  // Lista proprietari
+  var propList='';
+  if(c.clIds&&c.clIds.length){
+    for(var i=0;i<c.clIds.length;i++){
+      var cl=getCl(c.clIds[i]);
+      if(cl)propList+='<div style="font-size:12px;margin:2px 0"><span class="codice">'+cl.cod+'</span> '+cl.nome+(cl.cf?' — C.F. '+cl.cf:'')+'</div>';
+    }
+  }
+  var modInfo='';
+  if(c.modLog&&c.modLog.length){
+    modInfo='<div class="slog" style="margin-top:4px">Ultima modifica: '+c.modLog[c.modLog.length-1].d+'</div>';
+  }
+  document.getElementById('mb').innerHTML=
+    '<h3>'+nomeCompletoContratto(c)+' — '+(c.imm||'Contratto')+'</h3>'
+    +(c.cod?'<div style="margin-bottom:8px"><span class="codice">'+c.cod+'</span></div>':'')
+    +'<div class="kv"><span class="k">Proprietari</span><span style="flex:1">'+(propList||'—')+'</span></div>'
+    +'<div class="kv"><span class="k">Canone</span><span>€'+parseFloat(c.cm).toFixed(2)+'/mese (€'+(parseFloat(c.cm)*12).toFixed(2)+'/anno)</span></div>'
+    +'<div class="kv"><span class="k">Fascia</span><span>'+(parseFloat(c.cm)*12<8760?'Bassa — 1€/giorno':'Alta — 50% canone mensile')+'</span></div>'
+    +'<div class="kv"><span class="k">Inizio</span><span>'+new Date(c.di).toLocaleDateString('it-IT')+'</span></div>'
+    +'<div class="kv"><span class="k">Scadenza (8 anni)</span><span>'+sd.toLocaleDateString('it-IT')+'</span></div>'
+    +'<div class="kv"><span class="k">Immobile</span><span>'+(c.imm||'—')+' '+mapsLink+'</span></div>'
+    +'<div class="kv"><span class="k">Acquisto tramite agenzia</span><span>'+(c.acq?'Si — 1° anno gratuito':'No')+'</span></div>'
+    +(c.nt?'<div class="kv"><span class="k">Note</span><span>'+c.nt+'</span></div>':'')
+    +modInfo
+    +'<div class="st">Piano canoni anno per anno</div>'+righe
+    +'<div style="margin-top:14px;display:flex;gap:7px;flex-wrap:wrap">'
+    +'<button class="btn bp" onclick="pdf(\''+id+'\')">Stampa PDF</button>'
+    +'<button class="btn bmod" onclick="apriModifica(\''+id+'\')">&#9998; Modifica contratto</button>'
+    +'<button class="btn" onclick="apriAlert(\''+id+'\')">Promemoria</button>'
+    +'<button class="btn" onclick="chiudi()">Chiudi</button></div>';
+  document.getElementById('ovl').classList.add('on');
 }
 
-function openSconto(id,anno){
-  const c=DB.contratti.find(x=>x.id===id);
-  const s=(c.sconti||[]).find(x=>x.anno===anno);
-  const r=calcCanone(c,anno);
-  document.getElementById('modal-body').innerHTML=
-    '<h3>Sconto '+anno+' — '+c.cliente+'</h3>'
-    +'<div class="alert alert-info" style="margin-bottom:12px">Canone lordo base: <b>€'+(r?r.lordo.toFixed(2):'—')+'</b></div>'
-    +'<label>Tipo sconto</label><select id="sc-t"><option value="perc"'+(s&&s.tipo==='perc'?' selected':'')+'>Percentuale (%)</option><option value="fisso"'+(s&&s.tipo==='fisso'?' selected':'')+'>Cifra fissa (€)</option></select>'
-    +'<label>Valore</label><input id="sc-v" type="number" min="0" step="0.01" value="'+(s?s.val:0)+'">'
-    +'<label>Motivo (opzionale)</label><input id="sc-n" placeholder="Accordo commerciale..." value="'+(s?s.note||':'')+'">'
-    +'<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">'
-    +'<button class="btn btn-primary" onclick="salvaSconto(\''+id+'\','+anno+')">Salva</button>'
-    +(s?'<button class="btn btn-danger" onclick="delSconto(\''+id+'\','+anno+')">Rimuovi sconto</button>':'')
-    +'<button class="btn" onclick="openDett(\''+id+'\')">Annulla</button></div>';
+function apriSco(id,anno){
+  var c=getCt(id);
+  var s=null;if(c.sco)for(var i=0;i<c.sco.length;i++){if(c.sco[i].anno===anno){s=c.sco[i];break;}}
+  var r=calc(c,anno);
+  document.getElementById('mb').innerHTML=
+    '<h3>Sconto '+anno+' — '+nomeCompletoContratto(c)+'</h3>'
+    +'<div class="al ai" style="margin-bottom:10px">Lordo base: <b>€'+(r?r.lordo.toFixed(2):'—')+'</b></div>'
+    +'<label>Tipo</label><select id="sTp"><option value="perc"'+(s&&s.tipo==='perc'?' selected':'')+'>Percentuale (%)</option><option value="fisso"'+(s&&s.tipo==='fisso'?' selected':'')+'>Cifra fissa (€)</option></select>'
+    +'<label>Valore</label><input id="sVl" type="number" min="0" step="0.01" value="'+(s?s.val:0)+'">'
+    +'<label>Motivo</label><input id="sNt" value="'+(s?s.note||'':'')+'" placeholder="Accordo commerciale...">'
+    +'<div style="margin-top:14px;display:flex;gap:7px;flex-wrap:wrap">'
+    +'<button class="btn bp" onclick="saveSco(\''+id+'\','+anno+')">Salva</button>'
+    +(s?'<button class="btn bd" onclick="delSco(\''+id+'\','+anno+')">Rimuovi</button>':'')
+    +'<button class="btn" onclick="apriDett(\''+id+'\')">Annulla</button></div>';
 }
-function salvaSconto(id,anno){
-  const c=DB.contratti.find(x=>x.id===id);if(!c.sconti)c.sconti=[];
-  const tipo=document.getElementById('sc-t').value;
-  const val=parseFloat(document.getElementById('sc-v').value)||0;
-  const note=document.getElementById('sc-n').value;
-  const idx=c.sconti.findIndex(s=>s.anno===anno);
-  if(idx>=0)c.sconti[idx]={anno,tipo,val,note};else c.sconti.push({anno,tipo,val,note});
-  save();openDett(id);
+function saveSco(id,anno){
+  var c=getCt(id);if(!c.sco)c.sco=[];
+  var tipo=document.getElementById('sTp').value,val=parseFloat(document.getElementById('sVl').value)||0,note=document.getElementById('sNt').value;
+  var idx=-1;for(var i=0;i<c.sco.length;i++){if(c.sco[i].anno===anno){idx=i;break;}}
+  if(idx>=0)c.sco[idx]={anno:anno,tipo:tipo,val:val,note:note};else c.sco.push({anno:anno,tipo:tipo,val:val,note:note});
+  sv();apriDett(id);
 }
-function delSconto(id,anno){
-  const c=DB.contratti.find(x=>x.id===id);c.sconti=(c.sconti||[]).filter(s=>s.anno!==anno);save();openDett(id);
-}
+function delSco(id,anno){var c=getCt(id);var a=[];for(var i=0;i<c.sco.length;i++){if(c.sco[i].anno!==anno)a.push(c.sco[i]);}c.sco=a;sv();apriDett(id);}
 
-function openNuovoCliente(){
-  document.getElementById('modal-body').innerHTML=
+function apriNC(){
+  var cod=genCodCliente();
+  document.getElementById('mb').innerHTML=
     '<h3>Nuovo cliente</h3>'
-    +'<label>Nome / Ragione sociale *</label><input id="cl-n" placeholder="Mario Rossi">'
-    +'<div class="row-flex"><div><label>Codice Fiscale</label><input id="cl-cf"></div><div><label>P.IVA</label><input id="cl-pi"></div></div>'
-    +'<div class="row-flex"><div><label>Telefono</label><input id="cl-tel"></div><div><label>Email</label><input id="cl-em"></div></div>'
-    +'<label>Indirizzo</label><input id="cl-addr">'
-    +'<label>Note</label><textarea id="cl-note" rows="2"></textarea>'
-    +'<div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-primary" onclick="salvaCliente()">Salva</button><button class="btn" onclick="closeModal()">Annulla</button></div>'
-    +'<div id="cl-msg"></div>';
-  document.getElementById('modal-bg').classList.add('open');
+    +'<div class="al ai" style="margin-bottom:10px;font-size:12px">Codice cliente: <b class="codice">'+cod+'</b> (non modificabile)</div>'
+    +'<div class="rf"><div><label>Nome *</label><input id="cNm" placeholder="Mario"></div>'
+    +'<div><label>Cognome *</label><input id="cCg" placeholder="Rossi"></div></div>'
+    +'<div class="rf"><div><label>Codice Fiscale <span style="color:var(--dr)">*</span></label><input id="cCf" placeholder="RSSMRA75B01F205Z"></div>'
+    +'<div><label>P.IVA</label><input id="cPi" placeholder="01234567890"></div></div>'
+    +'<div class="rf"><div><label>Telefono</label><input id="cTl"></div><div><label>Email</label><input id="cEm"></div></div>'
+    +'<div class="rf"><div><label>PEC</label><input id="cPec"></div><div><label>SDI</label><input id="cSdi" placeholder="XXXXXXX"></div></div>'
+    +'<label>Indirizzo</label><div class="ac-wrap"><input id="cAd" placeholder="Inizia a scrivere..." autocomplete="off"><div class="ac-list" id="acAd" style="display:none"></div></div>'
+    +'<label>Note</label><textarea id="cNt" rows="2"></textarea>'
+    +'<p style="font-size:11px;color:var(--dr);margin-top:6px">* C.F. consigliato per la fatturazione</p>'
+    +'<div style="margin-top:14px;display:flex;gap:7px"><button class="btn bp" onclick="saveCl(\''+cod+'\')">Salva</button><button class="btn" onclick="chiudi()">Annulla</button></div>'
+    +'<div id="cMsg"></div>';
+  document.getElementById('ovl').classList.add('on');
+  setTimeout(function(){if(document.getElementById('cAd'))initAC('cAd','acAd');},100);
 }
-function salvaCliente(){
-  const nome=document.getElementById('cl-n').value.trim();
-  if(!nome){document.getElementById('cl-msg').innerHTML='<div class="alert alert-danger" style="margin-top:8px">Il nome è obbligatorio</div>';return;}
-  DB.clienti.push({id:'k'+Date.now(),nome,cf:document.getElementById('cl-cf').value,piva:document.getElementById('cl-pi').value,
-    tel:document.getElementById('cl-tel').value,email:document.getElementById('cl-em').value,
-    addr:document.getElementById('cl-addr').value,note:document.getElementById('cl-note').value});
-  save();closeModal();if(TAB==='clienti'||TAB==='nuovo')render();
+function saveCl(cod){
+  var nome=document.getElementById('cNm').value.trim();
+  var cogn=document.getElementById('cCg').value.trim();
+  var cf=document.getElementById('cCf').value.trim();
+  if(!nome||!cogn){document.getElementById('cMsg').innerHTML='<div class="al ad" style="margin-top:8px">Nome e Cognome obbligatori</div>';return;}
+  if(!cf){if(!confirm('Attenzione: C.F. non inserito. Continuare?'))return;}
+  var adInp=document.getElementById('cAd');
+  DB.cl.push({id:'k'+Date.now(),cod:cod,nome:nome+' '+cogn,nome_:nome,cognome:cogn,cf:cf,pi:document.getElementById('cPi').value,tel:document.getElementById('cTl').value,em:document.getElementById('cEm').value,pec:document.getElementById('cPec').value,sdi:document.getElementById('cSdi').value,adr:adInp?adInp.value:'',nt:document.getElementById('cNt').value});
+  sv();chiudi();
+  if(TAB==='cl')rend();
+  else if(TAB==='nw')renderOwnersPicker();
 }
-function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function chiudi(){document.getElementById('ovl').classList.remove('on');CURRENT_OWNERS=[];}
 
-function stampaPDF(id){
-  const c=DB.contratti.find(x=>x.id===id);if(!c)return;
-  const anni=getAnni(c);const scad=getScad(c);const cl=DB.clienti.find(x=>x.id===c.clienteId);
-  let righe='';let tot=0;
-  anni.forEach(anno=>{
-    const r=calcCanone(c,anno);if(!r)return;
-    if(!r.isFree)tot+=r.totale;
-    const stato=r.isFree?'Gratuito':r.pagato?'PAGATO'+(r.dataPag?' '+r.dataPag:''):'IN ATTESA';
-    righe+='<tr><td>'+anno+'</td><td>'+(r.isFree?'Gratuito':r.fascia?'1€/giorno':'50% canone annuo')+'</td>'
-      +'<td>'+(r.isFree?'—':'€'+r.lordo.toFixed(2))+'</td>'
-      +'<td>'+(r.sconto>0?'€'+r.sconto.toFixed(2)+(r.sObj&&r.sObj.tipo==='perc'?' ('+r.sObj.val+'%)':''):'—')+'</td>'
-      +'<td>'+(r.isFree?'—':'€'+r.netto.toFixed(2))+'</td><td>'+(r.isFree?'—':'€'+r.iva.toFixed(2))+'</td>'
-      +'<td>'+(r.isFree?'—':'€'+r.totale.toFixed(2))+'</td>'
-      +'<td style="color:'+(stato==='IN ATTESA'?'#b91c1c':stato.startsWith('PAGATO')?'#166534':'#555')+';font-weight:600">'+stato+'</td></tr>';
-  });
-  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report — '+c.cliente+'</title>'
-    +'<style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:28px 36px;max-width:960px;margin:0 auto}'
-    +'.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:14px;border-bottom:3px solid #0a1f44}'
-    +'.logo{display:flex;align-items:center;gap:12px}.lb{width:38px;height:38px;background:#0a1f44;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}'
-    +'.an{font-size:18px;font-weight:700;color:#0a1f44}.as{font-size:11px;color:#6b7280;margin-top:2px}'
-    +'h2{font-size:11px;font-weight:700;margin:18px 0 8px;color:#0a1f44;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e5e7eb;padding-bottom:4px}'
-    +'.ig{display:grid;grid-template-columns:1fr 1fr;gap:4px 40px;margin-bottom:4px}'
-    +'.kv{display:flex;gap:8px;padding:3px 0;font-size:12px}.k{color:#6b7280;min-width:130px}'
-    +'table{width:100%;border-collapse:collapse;margin-top:6px;font-size:11px}'
-    +'thead tr{background:#0a1f44}th{color:#fff;padding:8px 10px;text-align:left;font-size:11px;font-weight:600}'
-    +'td{padding:7px 10px;border-bottom:1px solid #e5e7eb}tr:nth-child(even) td{background:#f2f5fa}'
-    +'.tb{background:#0a1f44;color:#fff;text-align:right;margin-top:12px;padding:10px 16px;border-radius:6px;font-size:14px;font-weight:700}'
-    +'.ft{margin-top:40px;font-size:10px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:8px;display:flex;justify-content:space-between}'
-    +'@media print{body{padding:0}}</style></head><body>'
-    +'<div class="hdr"><div class="logo"><div class="lb">SC</div><div><div class="an">Studio Casa Offanengo</div><div class="as">Gestione Immobiliare</div></div></div>'
-    +'<div style="text-align:right;font-size:11px;color:#6b7280">Report generato il<br><b>'+TODAY.toLocaleDateString('it-IT')+'</b></div></div>'
-    +'<h2>Dati cliente</h2><div class="ig">'
-    +'<div><div class="kv"><span class="k">Nome</span><b>'+(cl?cl.nome:c.cliente)+'</b></div>'
-    +'<div class="kv"><span class="k">Codice Fiscale</span>'+(cl&&cl.cf?cl.cf:'—')+'</div>'
-    +'<div class="kv"><span class="k">P.IVA</span>'+(cl&&cl.piva?cl.piva:'—')+'</div></div>'
-    +'<div><div class="kv"><span class="k">Telefono</span>'+(cl&&cl.tel?cl.tel:'—')+'</div>'
-    +'<div class="kv"><span class="k">Email</span>'+(cl&&cl.email?cl.email:'—')+'</div>'
-    +'<div class="kv"><span class="k">Indirizzo</span>'+(cl&&cl.addr?cl.addr:'—')+'</div></div></div>'
-    +'<h2>Contratto di gestione</h2><div class="ig">'
-    +'<div><div class="kv"><span class="k">Immobile</span>'+(c.immobile||'—')+'</div>'
-    +'<div class="kv"><span class="k">Canone locazione</span>€'+parseFloat(c.canoneMensile).toFixed(2)+'/mese</div>'
-    +'<div class="kv"><span class="k">Fascia gestione</span>'+(parseFloat(c.canoneMensile)*12<8760?'Bassa (1€/giorno)':'Alta (50% canone annuo)')+'</div></div>'
-    +'<div><div class="kv"><span class="k">Data inizio</span>'+new Date(c.dataInizio).toLocaleDateString('it-IT')+'</div>'
-    +'<div class="kv"><span class="k">Scadenza</span>'+scad.toLocaleDateString('it-IT')+'</div>'
-    +'<div class="kv"><span class="k">Acquisto tramite agenzia</span>'+(c.acquistoDaNoi?'Sì — 1° anno gratuito':'No')+'</div></div></div>'
-    +(c.note?'<div class="kv"><span class="k">Note</span>'+c.note+'</div>':'')
-    +'<h2>Piano canoni di gestione (8 anni)</h2>'
-    +'<table><thead><tr><th>Anno</th><th>Tipo</th><th>Lordo</th><th>Sconto</th><th>Imponibile</th><th>IVA 22%</th><th>Totale</th><th>Stato</th></tr></thead><tbody>'+righe+'</tbody></table>'
-    +'<div class="tb">Totale complessivo contratto (IVA inclusa): €'+tot.toFixed(2)+'</div>'
-    +'<div class="ft"><span>Studio Casa Offanengo — Documento riservato</span><span>Generato il '+TODAY.toLocaleDateString('it-IT')+'</span></div>'
+// PRO-FORMA
+function proforma(ctId,anno){
+  var c=getCt(ctId);if(!c)return;
+  var r=calc(c,anno);if(!r||r.free)return;
+  // Prende il primo proprietario come intestatario principale della fattura
+  var cl=(c.clIds&&c.clIds.length)?getCl(c.clIds[0]):(c.clId?getCl(c.clId):null);
+  var nomeFatt=cl?cl.nome:nomeCompletoContratto(c);
+  var oggi=T.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  var citta='Offanengo';
+  var numPF=(c.pag||[]).filter(function(p){return p.pf;}).length+1;
+  // Se multi-proprietari, aggiunge info co-intestatari
+  var coIntest='';
+  if(c.clIds&&c.clIds.length>1){
+    var altri=[];
+    for(var i=1;i<c.clIds.length;i++){var cl2=getCl(c.clIds[i]);if(cl2)altri.push(cl2.nome);}
+    if(altri.length)coIntest='<div style="font-size:11px;color:#6b7280;margin-top:4px">Co-intestatari: '+altri.join(', ')+'</div>';
+  }
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Pro-forma '+nomeFatt+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;max-width:700px;margin:40px auto;padding:0 20px}'
+    +'.agenzia{font-size:18px;font-weight:700;color:#0a1f44}.sub-ag{font-size:11px;color:#6b7280;margin-bottom:24px}'
+    +'.dest-nome{font-size:14px;font-weight:700;margin-bottom:2px}.dest-info{font-size:12px;color:#333;line-height:1.6}'
+    +'.luogo-data{text-align:right;font-size:12px;margin-bottom:6px;margin-top:20px}'
+    +'.num-fattura{text-align:right;font-size:13px;font-weight:700;color:#0a1f44;margin-bottom:20px}'
+    +'.mod-pag{font-size:12px;margin-bottom:20px}.oggetto{font-size:12px;margin-bottom:20px;line-height:1.6}.oggetto b{color:#0a1f44}'
+    +'.importi{width:100%;border-collapse:collapse;margin-bottom:16px}.importi td{padding:8px 12px;border:1px solid #e5e7eb;font-size:13px}'
+    +'.importi .lbl{color:#6b7280}.importi .totale{font-weight:700;font-size:15px;background:#0a1f44;color:#fff}'
+    +'.note{font-size:11px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:12px;margin-top:20px}'
+    +'@media print{body{margin:20px auto}.no-print{display:none}}</style></head><body>'
+    +'<div class="agenzia">Studio Casa Offanengo</div><div class="sub-ag">Agenzia Immobiliare — Gestione Affitti</div>'
+    +'<div style="font-size:11px;color:#6b7280;margin-bottom:4px">Spett.</div>'
+    +'<div class="dest-nome">'+nomeFatt+'</div>'
+    +'<div class="dest-info">'+(cl&&cl.adr?cl.adr+'<br>':'')+(cl&&cl.cf?'C.F.: '+cl.cf+'<br>':'')+(cl&&cl.pi?'P.IVA: '+cl.pi:'')+'</div>'
+    +coIntest
+    +'<div class="luogo-data">'+citta+', '+oggi+'</div>'
+    +'<div class="num-fattura">Pro-forma n. '+String(numPF).padStart(2,'0')+'/OF — '+anno+'</div>'
+    +'<div class="mod-pag"><b>Mod. Pagamento:</b> assegno bancario / bonifico bancario<br><b>Intesa San Paolo</b> — IBAN: IT86 I030 6956 8411 0000 0019 260</div>'
+    +'<div class="oggetto"><b>OGGETTO:</b> Nostro compenso pattuito per la gestione dell\'affitto dell\'immobile sito in '+(c.imm||'—')+', comprensivo di rimborso spese.'+(r.periodo?' Periodo di competenza: '+r.periodo+'.':'')+'</div>'
+    +'<table class="importi">'
+    +'<tr><td class="lbl">IMPONIBILE</td><td style="text-align:right"><b>€ '+r.net.toFixed(2)+'</b></td></tr>'
+    +'<tr><td class="lbl">IVA 22%</td><td style="text-align:right">€ '+r.iva.toFixed(2)+'</td></tr>'
+    +(r.sc>0?'<tr><td class="lbl">Sconto applicato</td><td style="text-align:right">- € '+r.sc.toFixed(2)+'</td></tr>':'')
+    +'<tr><td class="totale">TOTALE</td><td class="totale" style="text-align:right">€ '+r.tot.toFixed(2)+'</td></tr></table>'
+    +(cl&&cl.cod?'<div style="font-size:11px;color:#6b7280;margin-bottom:8px">Codice cliente: '+cl.cod+' | Codice contratto: '+(c.cod||'—')+'</div>':'')
+    +(cl&&cl.sdi?'<div style="font-size:11px;color:#6b7280;margin-bottom:8px">SDI: '+cl.sdi+(cl.pec?' | PEC: '+cl.pec:'')+'</div>':'')
+    +'<div class="note">Documento non valido ai fini fiscali. Pro-forma emesso da Studio Casa Offanengo in attesa di regolare fattura.</div>'
+    +'<div class="no-print" style="margin-top:24px;display:flex;gap:10px"><button onclick="window.print()" style="padding:8px 16px;background:#0a1f44;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer">Stampa / Salva PDF</button><button onclick="window.close()" style="padding:8px 16px;background:transparent;border:1px solid #e5e7eb;border-radius:6px;font-size:13px;cursor:pointer">Chiudi</button></div>'
     +'</body></html>';
-  const w=window.open('','_blank');
-  if(w){w.document.write(html);w.document.close();setTimeout(()=>w.print(),500);}
-  else alert('Abilita i popup per la stampa PDF');
+  var w=window.open('','_blank');
+  if(w){w.document.write(h);w.document.close();}
+  else alert('Abilita i popup');
+}
+
+function pdf(id){
+  var c=getCt(id);if(!c)return;
+  var an=anni(c),sd=scad(c);
+  var cl=(c.clIds&&c.clIds.length)?getCl(c.clIds[0]):(c.clId?getCl(c.clId):null);
+  var righe='',tot=0;
+  for(var i=0;i<an.length;i++){
+    var anno=an[i],r=calc(c,anno);if(!r)continue;
+    if(!r.free)tot+=r.tot;
+    var stato=r.free?'Gratuito':r.pag?'PAGATO'+(r.dp?' '+r.dp:''):'IN ATTESA';
+    righe+='<tr><td>'+anno+'</td><td>'+(r.free?'Gratuito':r.fas?'1€/gg':'50%')+'</td><td>'+(r.periodo||'Anno intero')+'</td>'
+      +'<td>'+(r.free?'—':'€'+r.lordo.toFixed(2))+'</td><td>'+(r.sc>0?'€'+r.sc.toFixed(2):'—')+'</td>'
+      +'<td>'+(r.free?'—':'€'+r.net.toFixed(2))+'</td><td>'+(r.free?'—':'€'+r.iva.toFixed(2))+'</td>'
+      +'<td>'+(r.free?'—':'€'+r.tot.toFixed(2))+'</td>'
+      +'<td style="color:'+(stato==='IN ATTESA'?'#b91c1c':stato.indexOf('PAGATO')>=0?'#166534':'#555')+';font-weight:600">'+stato+'</td></tr>';
+  }
+  var propHTML='';
+  if(c.clIds&&c.clIds.length){for(var i=0;i<c.clIds.length;i++){var cl2=getCl(c.clIds[i]);if(cl2)propHTML+='<div>'+cl2.nome+(cl2.cf?' — C.F. '+cl2.cf:'')+'</div>';}}
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report '+nomeCompletoContratto(c)+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:28px 36px;max-width:980px;margin:0 auto}'
+    +'.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:12px;border-bottom:3px solid #0a1f44}'
+    +'.lb2{width:36px;height:36px;background:#0a1f44;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}'
+    +'.an{font-size:17px;font-weight:700;color:#0a1f44}'
+    +'h2{font-size:11px;font-weight:700;margin:16px 0 7px;color:#0a1f44;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #e5e7eb;padding-bottom:4px}'
+    +'.ig{display:grid;grid-template-columns:1fr 1fr;gap:3px 36px}'
+    +'.kv{display:flex;gap:8px;padding:3px 0;font-size:12px}.k{color:#6b7280;min-width:130px}'
+    +'table{width:100%;border-collapse:collapse;margin-top:6px;font-size:10px}thead tr{background:#0a1f44}th{color:#fff;padding:7px 9px;text-align:left}'
+    +'td{padding:6px 9px;border-bottom:1px solid #e5e7eb}tr:nth-child(even) td{background:#f2f5fa}'
+    +'.tb{background:#0a1f44;color:#fff;text-align:right;margin-top:10px;padding:9px 14px;border-radius:6px;font-size:13px;font-weight:700}'
+    +'.ft{margin-top:36px;font-size:10px;color:#9ca3af;border-top:1px solid #e5e7eb;padding-top:7px;display:flex;justify-content:space-between}'
+    +'@media print{body{padding:0}}</style></head><body>'
+    +'<div class="hd"><div style="display:flex;align-items:center;gap:10px"><div class="lb2">SC</div><div><div class="an">Studio Casa Offanengo</div><div style="font-size:11px;color:#6b7280">Gestione Immobiliare</div></div></div>'
+    +'<div style="text-align:right;font-size:11px;color:#6b7280">Report del<br><b>'+T.toLocaleDateString('it-IT')+'</b></div></div>'
+    +'<h2>Proprietari</h2><div style="font-size:12px">'+propHTML+'</div>'
+    +'<h2>Contratto</h2><div class="ig">'
+    +'<div><div class="kv"><span class="k">Immobile</span>'+(c.imm||'—')+'</div>'
+    +'<div class="kv"><span class="k">Canone</span>€'+parseFloat(c.cm).toFixed(2)+'/mese</div>'
+    +'<div class="kv"><span class="k">Codice contratto</span>'+(c.cod||'—')+'</div></div>'
+    +'<div><div class="kv"><span class="k">Data inizio</span>'+new Date(c.di).toLocaleDateString('it-IT')+'</div>'
+    +'<div class="kv"><span class="k">Scadenza</span>'+sd.toLocaleDateString('it-IT')+'</div>'
+    +'<div class="kv"><span class="k">Acquisto agenzia</span>'+(c.acq?'Si — 1° anno gratuito':'No')+'</div></div></div>'
+    +'<h2>Piano canoni (8 anni)</h2>'
+    +'<table><thead><tr><th>Anno</th><th>Tipo</th><th>Periodo</th><th>Lordo</th><th>Sconto</th><th>Imponibile</th><th>IVA 22%</th><th>Totale</th><th>Stato</th></tr></thead><tbody>'+righe+'</tbody></table>'
+    +'<div class="tb">Totale contratto (IVA inclusa): €'+r2(tot).toFixed(2)+'</div>'
+    +'<div class="ft"><span>Studio Casa Offanengo — Riservato</span><span>'+T.toLocaleDateString('it-IT')+'</span></div></body></html>';
+  var w=window.open('','_blank');
+  if(w){w.document.write(h);w.document.close();setTimeout(function(){w.print();},400);}
+  else alert('Abilita i popup');
+}
+
+function demo(){
+  if(!confirm('Aggiungere dati demo?'))return;
+  if(!DB.cl.find(function(x){return x.id==='dc1';})){
+    DB.cl.push({id:'dc1',cod:'CL2601',nome:'Lucian Pirvan',nome_:'Lucian',cognome:'Pirvan',cf:'PRVLCN80A01Z129K',pi:'',tel:'333 1234567',em:'',pec:'',sdi:'',adr:'Via Roma 91, Pianengo',nt:''});
+    DB.cl.push({id:'dc2',cod:'CL2602',nome:'Anna Rozzoni',nome_:'Anna',cognome:'Rozzoni',cf:'RZZNNA82C41L219X',pi:'',tel:'',em:'',pec:'',sdi:'',adr:'',nt:'Moglie di Pirvan'});
+    DB.cl.push({id:'dc3',cod:'CL2603',nome:'Mario Rossi',nome_:'Mario',cognome:'Rossi',cf:'RSSMRA75B01F205Z',pi:'',tel:'347 9876543',em:'',pec:'',sdi:'',adr:'Via Manzoni 5, Offanengo',nt:''});
+  }
+  if(!DB.ct.find(function(x){return x.id==='dt1';})){
+    DB.ct.push({id:'dt1',cod:'CT2601',clIds:['dc1','dc2'],clId:'dc1',nome:'PIRVAN - ROZZONI',imm:'Via Roma 91, Pianengo (CR)',lat:'',lon:'',cm:600,di:'2025-07-02',acq:true,iva:true,emailFunz:'funzionario@studiocasa.it',nt:'Proprietà cointestata marito-moglie',sco:[],pag:[],prev:[24,12,6],alog:[]});
+    DB.ct.push({id:'dt2',cod:'CT2602',clIds:['dc3'],clId:'dc3',nome:'ROSSI',imm:'Via Garibaldi 12, Offanengo (CR)',lat:'',lon:'',cm:1000,di:'2023-01-01',acq:false,iva:true,emailFunz:'',nt:'',sco:[],pag:[{anno:2023,pag:true,d:'10/01/2023'},{anno:2024,pag:true,d:'08/01/2024'}],prev:[24,18,12,6],alog:[]});
+  }
+  sv();go('ct');
 }
 
 function runTests(){
-  const res=[];
-  function chk(name,got,exp,tol=0.01){res.push({name,ok:Math.abs(Number(got)-Number(exp))<=tol,got,expected:exp});}
-  const mk=(cm,di,acq,sc=[])=>({canoneMensile:cm,dataInizio:di,acquistoDaNoi:acq,iva:true,sconti:sc,pagamenti:[]});
-  let r;
-  r=calcCanone(mk(600,'2025-01-01',false),2025);chk('A — fascia bassa anno intero: lordo',r.lordo,365);chk('A — totale IVA',r.totale,445.30);
-  r=calcCanone(mk(1000,'2025-01-01',false),2025);chk('B — fascia alta anno intero: lordo',r.lordo,6000);chk('B — totale IVA',r.totale,7320);
-  r=calcCanone(mk(600,'2025-04-10',false),2025);chk('C — proporzionale 10/04/2025',r.lordo,dip(new Date(2025,3,10),new Date(2025,11,31)));
-  r=calcCanone(mk(600,'2025-01-01',true),2025);chk('D — 1° anno gratuito',r.totale,0);
-  r=calcCanone(mk(600,'2025-01-01',true),2026);chk('D — 2° anno non gratuito',r.lordo>0?1:0,1);
-  r=calcCanone(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'perc',val:20}]),2025);chk('E — sconto 20%: totale',r.totale,5856);
-  r=calcCanone(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'fisso',val:500}]),2025);chk('F — sconto fisso €500: totale',r.totale,6710);
-  chk('G — scadenza 8 anni',getScad(mk(600,'2020-01-01',false)).getFullYear(),2028);
-  chk('G — anno oltre scadenza',calcCanone(mk(600,'2020-01-01',false),2029)===null?1:0,1);
-  r=calcCanone(mk(730,'2025-01-01',false),2025);res.push({name:'H — 730€/mese: fascia alta',ok:r.fascia===false,got:r.fascia?'bassa':'alta',expected:'alta'});
+  var res=[];
+  function chk(name,got,exp,tol){if(tol===undefined)tol=0.01;res.push({name:name,ok:Math.abs(Number(got)-Number(exp))<=tol,got:got,exp:exp});}
+  function mk(cm,di,acq,sc){return{cm:cm,di:di,acq:acq,iva:true,sco:sc||[],pag:[]};}
+  var r;
+  // FASCIA BASSA (< 730/mese): 1€/giorno
+  r=calc(mk(600,'2025-01-01',false),2025);
+  chk('A — fascia bassa anno intero: 365€',r.lordo,365);
+  chk('A — totale IVA',r.tot,445.30);
+
+  // FASCIA ALTA (>= 730/mese): 50% canone mensile × 12 (anno intero) oppure ×gg/30 (parziale)
+  r=calc(mk(1000,'2025-01-01',false),2025);
+  chk('B — fascia alta 1000/mese anno intero: 500×12 = 6000',r.lordo,6000);
+  chk('B — totale IVA',r.tot,7320);
+
+  // ARENAS: 800/mese dal 2/5/2025 (244gg) = (800×0.5/30)×244 = 3253.33
+  r=calc(mk(800,'2025-05-02',false),2025);
+  chk('C — Arenas 800/mese dal 2/5/2025 (244gg): €3253.33',r.lordo,3253.33);
+
+  // ARENAS anno intero 2026: 800×0.5×12 = 4800
+  r=calc(mk(800,'2025-05-02',false),2026);
+  chk('C2 — Arenas 2026 anno intero: €4800',r.lordo,4800);
+
+  // ARENAS anno finale 2033 (1/1→1/5 = 121gg): (800×0.5/30)×121 = 1613.33
+  r=calc(mk(800,'2025-05-02',false),2033);
+  chk('C3 — Arenas 2033 finale (121gg): €1613.33',r.lordo,1613.33);
+
+  // Primo anno gratuito con acquisto
+  r=calc(mk(600,'2025-01-01',true),2025);chk('D — 1° anno gratuito',r.tot,0);
+
+  // PIRVAN 600/mese fascia bassa — 2° anno dopo acquisto (2/7→31/12/2026) = giorni
+  r=calc(mk(600,'2025-07-02',true),2026);
+  var giorniP26=(31-2+1+31+30+31+30+31);
+  chk('E — Pirvan 2° anno acquisto (2/7→31/12/2026)',r.lordo,giorniP26);
+
+  // PIRVAN anno intermedio (365 giorni fascia bassa)
+  r=calc(mk(600,'2025-07-02',true),2027);chk('F — Pirvan anno intermedio: 365€',r.lordo,365);
+
+  // Sconto 20% su 6000 (anno intero 1000€) = 4800 imponibile → 5856 IVA incl.
+  r=calc(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'perc',val:20}]),2025);
+  chk('H — sconto 20% su 6000€: netto 4800',r.net,4800);
+  chk('H — totale IVA con sconto',r.tot,5856);
+
+  // Soglia 730/mese esatta: fascia alta (>=730 o ann>=8760? verifichiamo: 730×12=8760, fas=ann<8760 quindi false)
+  r=calc(mk(730,'2025-01-01',false),2025);
+  chk('I — 730/mese soglia: fascia alta anno intero 365×12? No, 730×0.5×12',r.lordo,730*0.5*12);
+
+  var nc=nomeComposto(['dc1','dc2']);
+  res.push({name:'L — nome composto multi-proprietari',ok:(typeof nc==='string')&&nc.length>0,got:nc||'(vuoto)',exp:'stringa non vuota'});
   return res;
 }
 
-render();
+rend();
 </script>
 </body>
 </html>
