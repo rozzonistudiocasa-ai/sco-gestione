@@ -246,17 +246,18 @@ function calc(c,anno){
   if(!free){
     var gg=dip(ps,pe);
     if(fas){
-      // Fascia bassa: 1€ al giorno
+      // Fascia bassa (<730€/mese): 1€ al giorno
       lordo=gg;
     } else {
-      // Fascia alta: 50% del canone MENSILE
-      // Anno intero = 12 mesi × (canone × 0.5)
-      // Parziale = (canone × 0.5 / 30) × giorni effettivi
+      // Fascia alta (>=730€/mese): 50% del canone MENSILE = IMPORTO ANNUALE di gestione
+      // Es. 800€/mese → 400€/anno (una volta l'anno)
+      // Anno intero: canone × 0.5
+      // Parziale: (canone × 0.5) × (giorni / giorni_anno)
       var isAnnoIntero=(ps.getMonth()===0&&ps.getDate()===1&&pe.getMonth()===11&&pe.getDate()===31);
       if(isAnnoIntero){
-        lordo=can*0.5*12;
+        lordo=can*0.5;
       } else {
-        lordo=(can*0.5/30)*gg;
+        lordo=(can*0.5)*(gg/tg);
       }
     }
   }
@@ -890,47 +891,47 @@ function runTests(){
   function chk(name,got,exp,tol){if(tol===undefined)tol=0.01;res.push({name:name,ok:Math.abs(Number(got)-Number(exp))<=tol,got:got,exp:exp});}
   function mk(cm,di,acq,sc){return{cm:cm,di:di,acq:acq,iva:true,sco:sc||[],pag:[]};}
   var r;
-  // FASCIA BASSA (< 730/mese): 1€/giorno
+  // FASCIA BASSA (<730€/mese): 1€ al giorno
   r=calc(mk(600,'2025-01-01',false),2025);
-  chk('A — fascia bassa anno intero: 365€',r.lordo,365);
+  chk('A — fascia bassa 600/mese anno intero: 365€',r.lordo,365);
   chk('A — totale IVA',r.tot,445.30);
 
-  // FASCIA ALTA (>= 730/mese): 50% canone mensile × 12 (anno intero) oppure ×gg/30 (parziale)
+  // FASCIA ALTA (>=730€/mese): 50% canone mensile = importo ANNUALE
+  // 1000/mese → 500€ all'anno
   r=calc(mk(1000,'2025-01-01',false),2025);
-  chk('B — fascia alta 1000/mese anno intero: 500×12 = 6000',r.lordo,6000);
-  chk('B — totale IVA',r.tot,7320);
+  chk('B — fascia alta 1000/mese anno intero: 500€',r.lordo,500);
+  chk('B — totale IVA',r.tot,610);
 
-  // ARENAS: 800/mese dal 2/5/2025 (244gg) = (800×0.5/30)×244 = 3253.33
+  // ARENAS 800/mese dal 2/5/2025 (244gg): 400 × 244/365 = 267.40
   r=calc(mk(800,'2025-05-02',false),2025);
-  chk('C — Arenas 800/mese dal 2/5/2025 (244gg): €3253.33',r.lordo,3253.33);
+  chk('C — Arenas 2025 (244gg): €267.40',r.lordo,400*244/365);
 
-  // ARENAS anno intero 2026: 800×0.5×12 = 4800
+  // ARENAS 2026 anno intero: 400€
   r=calc(mk(800,'2025-05-02',false),2026);
-  chk('C2 — Arenas 2026 anno intero: €4800',r.lordo,4800);
+  chk('C2 — Arenas 2026 anno intero: 400€',r.lordo,400);
 
-  // ARENAS anno finale 2033 (1/1→1/5 = 121gg): (800×0.5/30)×121 = 1613.33
+  // ARENAS 2033 finale (121gg): 400 × 121/365
   r=calc(mk(800,'2025-05-02',false),2033);
-  chk('C3 — Arenas 2033 finale (121gg): €1613.33',r.lordo,1613.33);
+  chk('C3 — Arenas 2033 finale (121gg)',r.lordo,400*121/365);
 
   // Primo anno gratuito con acquisto
   r=calc(mk(600,'2025-01-01',true),2025);chk('D — 1° anno gratuito',r.tot,0);
 
-  // PIRVAN 600/mese fascia bassa — 2° anno dopo acquisto (2/7→31/12/2026) = giorni
+  // Acquisto 2/7/2025: 2025 gratis, 2026 proporzionale dal 2/7 (fascia bassa giorni)
   r=calc(mk(600,'2025-07-02',true),2026);
-  var giorniP26=(31-2+1+31+30+31+30+31);
-  chk('E — Pirvan 2° anno acquisto (2/7→31/12/2026)',r.lordo,giorniP26);
+  chk('E — Pirvan 2° anno acquisto (2/7→31/12/2026) fascia bassa',r.lordo,(31-2+1+31+30+31+30+31));
 
-  // PIRVAN anno intermedio (365 giorni fascia bassa)
-  r=calc(mk(600,'2025-07-02',true),2027);chk('F — Pirvan anno intermedio: 365€',r.lordo,365);
+  // Anno intermedio fascia bassa: 365
+  r=calc(mk(600,'2025-07-02',true),2027);chk('F — Pirvan anno intermedio fascia bassa: 365€',r.lordo,365);
 
-  // Sconto 20% su 6000 (anno intero 1000€) = 4800 imponibile → 5856 IVA incl.
+  // Sconto 20% su 500: netto 400, tot 488
   r=calc(mk(1000,'2025-01-01',false,[{anno:2025,tipo:'perc',val:20}]),2025);
-  chk('H — sconto 20% su 6000€: netto 4800',r.net,4800);
-  chk('H — totale IVA con sconto',r.tot,5856);
+  chk('H — sconto 20% su 500€: netto 400',r.net,400);
+  chk('H — totale IVA con sconto',r.tot,488);
 
-  // Soglia 730/mese esatta: fascia alta (>=730 o ann>=8760? verifichiamo: 730×12=8760, fas=ann<8760 quindi false)
+  // Soglia: 730/mese = 730×12=8760 annuo, fas=ann<8760=false → fascia alta, 365€
   r=calc(mk(730,'2025-01-01',false),2025);
-  chk('I — 730/mese soglia: fascia alta anno intero 365×12? No, 730×0.5×12',r.lordo,730*0.5*12);
+  chk('I — 730/mese soglia: fascia alta 365€',r.lordo,365);
 
   var nc=nomeComposto(['dc1','dc2']);
   res.push({name:'L — nome composto multi-proprietari',ok:(typeof nc==='string')&&nc.length>0,got:nc||'(vuoto)',exp:'stringa non vuota'});
